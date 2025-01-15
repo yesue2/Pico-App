@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pico.R
@@ -30,7 +31,8 @@ fun NextButton(onClick: () -> Unit) {
         Text(
             text = "Next",
             fontSize = 24.sp,
-            color = MainYellow
+            color = MainYellow,
+            fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.width(8.dp))
         Icon(
