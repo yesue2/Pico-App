@@ -19,7 +19,7 @@ import com.example.pico.R
 import com.example.pico.ui.theme.PicoTheme
 
 @Composable
-fun SummitButton(content: String) {
+fun SummitButton(content: String, onClick: () -> Unit) {
     val summitButtonPainter: Painter = painterResource(id = R.drawable.btn_summit)
 
     Box(
@@ -47,6 +47,8 @@ fun SummitButton(content: String) {
 @Composable
 fun SummitPreview() {
     PicoTheme {
-        SummitButton("Let's Start")
+        SummitButton("Let's Start") {
+
+        }
     }
 }

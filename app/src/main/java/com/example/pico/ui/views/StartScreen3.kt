@@ -3,6 +3,7 @@ package com.example.pico.ui.views
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,15 +17,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.pico.R
+import com.example.pico.ui.components.NextButton
+import com.example.pico.ui.components.SummitButton
 import com.example.pico.ui.theme.MainYellow
 import com.example.pico.ui.theme.PicoTheme
 
 @Composable
-fun StartScreen3() {
+fun StartScreen3(navController: NavController) {
     val backgroundPainter: Painter = painterResource(id = R.drawable.background_start)
     val openingIconPainter: Painter = painterResource(id = R.drawable.ic_openning1)
-    val summitButtonPainter: Painter = painterResource(id = R.drawable.btn_summit)
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -76,23 +80,12 @@ fun StartScreen3() {
 
         Box(
             modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 60.dp),
+                .align(Alignment.BottomCenter),
             contentAlignment = Alignment.Center
         ) {
-            Image(
-                painter = summitButtonPainter,
-                contentDescription = "Summit Button Background",
-                modifier = Modifier
-                    .size(width = 350.dp, height = 65.dp)
-            )
-
-            Text(
-                text = "Let’s Start",
-                color = Color.White,
-                fontSize = 25.sp,
-                fontWeight = FontWeight.Bold
-            )
+            SummitButton(content = "Let's Start") {
+                navController.navigate("home")
+            }
         }
     }
 }
@@ -104,8 +97,10 @@ fun StartScreen3() {
     name = "Dark"
 )
 @Composable
-fun Start3Preview() {
+fun SPreview() {
+    val navController = rememberNavController()
+
     PicoTheme {
-        StartScreen3()
+        StartScreen3(navController)
     }
 }
