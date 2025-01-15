@@ -21,6 +21,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.pico.R
 import com.example.pico.ui.components.NextButton
 import com.example.pico.ui.theme.MainDarkBrown
@@ -28,7 +29,7 @@ import com.example.pico.ui.theme.MainYellow
 import com.example.pico.ui.theme.PicoTheme
 
 @Composable
-fun StartScreen1() {
+fun StartScreen1(navController: NavController) {
     val backgroundPainter: Painter = painterResource(id = R.drawable.background_start)
     val openingIconPainter: Painter = painterResource(id = R.drawable.ic_openning1)
 
@@ -122,22 +123,9 @@ fun StartScreen1() {
                 modifier = Modifier.align(Alignment.BottomEnd)
             ) {
                 NextButton(onClick = {
-                    // Handle Next Button Click
+                    navController.navigate("Start2")
                 })
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Preview(
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    name = "Dark"
-)
-@Composable
-fun Start1Preview() {
-    PicoTheme {
-        StartScreen1()
     }
 }
