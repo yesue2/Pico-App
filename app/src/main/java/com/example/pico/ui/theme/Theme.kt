@@ -18,17 +18,6 @@ import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
     primary = Yellow90,
-    onPrimary = MyLightBlue,
-    secondary = MyBrown,
-    onSecondary = MyLightBlue,
-    tertiary = Color.White,
-    onTertiary = MyDarkBlue,
-    background = MyDarkWhite,
-    onBackground = MyBlue
-)
-
-private val LightColorScheme = lightColorScheme(
-    primary = Yellow90,
     onPrimary = Yellow90,
     secondary = MyGray,
     onSecondary = MyGray,
@@ -36,6 +25,17 @@ private val LightColorScheme = lightColorScheme(
     onTertiary = MyWhite,
     background = Color.Black,
     onBackground = MyGray
+)
+
+private val LightColorScheme = lightColorScheme(
+    primary = Yellow90,
+    onPrimary = MyLightBlue,
+    secondary = MyBrown,
+    onSecondary = MyLightBlue,
+    tertiary = Color.White,
+    onTertiary = MyDarkBlue,
+    background = MyDarkWhite,
+    onBackground = MyBlue
 )
 
 @Composable
@@ -55,11 +55,13 @@ fun PicoTheme(
         }*/
 
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
             window.statusBarColor = Color.Transparent.toArgb()
+            window.navigationBarColor = Color.Transparent.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
