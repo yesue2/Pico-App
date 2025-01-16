@@ -99,10 +99,12 @@ fun StartScreen2(navController: NavController) {
             Text(
                 text = "계획을 쉽게 정리하고",
                 style = MaterialTheme.typography.bodyMedium,
+                color = MainDarkBrown
             )
             Text(
                 text = "목표를 차근차근 이루어보세요!",
                 style = MaterialTheme.typography.bodyMedium,
+                color = MainDarkBrown
             )
             Spacer(modifier = Modifier.height(50.dp))
 

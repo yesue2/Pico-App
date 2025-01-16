@@ -84,10 +84,12 @@ fun StartScreen1(navController: NavController) {
             Text(
                 text = "작고 간편한 Todo 리스트 앱",
                 style = MaterialTheme.typography.bodyMedium,
+                color = MainDarkBrown
             )
             Text(
                 text = "Pico에 오신 걸 환영해요!",
                 style = MaterialTheme.typography.bodyMedium,
+                color = MainDarkBrown
             )
             Spacer(modifier = Modifier.height(50.dp))
 

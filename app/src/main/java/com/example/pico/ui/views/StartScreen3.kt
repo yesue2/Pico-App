@@ -22,6 +22,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.pico.R
 import com.example.pico.ui.components.NextButton
 import com.example.pico.ui.components.SummitButton
+import com.example.pico.ui.theme.MainDarkBrown
 import com.example.pico.ui.theme.MainYellow
 import com.example.pico.ui.theme.PicoTheme
 
@@ -61,20 +62,24 @@ fun StartScreen3(navController: NavController) {
             Text(
                 text = "Pico는",
                 style = MaterialTheme.typography.bodyMedium,
+                color = MainDarkBrown
             )
             Text(
                 text = "여러분의 바쁜 하루를",
                 style = MaterialTheme.typography.bodyMedium,
+                color = MainDarkBrown
             )
             Text(
                 text = "더 가볍고 행복하게 만들어줄 거예요.",
                 style = MaterialTheme.typography.bodyMedium,
+                color = MainDarkBrown
             )
             Spacer(modifier = Modifier.height(40.dp))
 
             Text(
                 text = "지금 바로 Pico와 함께 시작해볼까요?",
                 style = MaterialTheme.typography.bodyMedium,
+                color = MainDarkBrown
             )
         }
 
