@@ -22,3 +22,12 @@ val Yellow30 = Color(0xFFFFF9E1)
 val MainYellow = Color(0xFFFFBB38)
 val MainDarkBrown = Color(0xFF534B3C)
 
+val MyDarkWhite = Color(0xFFF5F7FA)
+val MyDarkBlack = Color(0xFF1E1E1E)
+val MyBrown = Color(0xFF232323)
+val MyGray = Color(0xFFEAEAEA)
+val MyBlue = Color(0xFF333B69)
+val MyDarkBlue = Color(0xFF343C6A)
+val MyWhite = Color(0xFFF8F9FF)
+val MyLightBlue = Color(0xFF718EBF)
+
