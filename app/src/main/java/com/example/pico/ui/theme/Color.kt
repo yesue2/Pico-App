@@ -31,3 +31,10 @@ val MyDarkBlue = Color(0xFF343C6A)
 val MyWhite = Color(0xFFF8F9FF)
 val MyLightBlue = Color(0xFF718EBF)
 
+val BackBlue = Color(0xFFE7EDFF)
+val BackYellow = Color(0xFFFFF5D9)
+val BackPink = Color(0xFFFFE0EB)
+val BackGreen = Color(0xFFDCFAF8)
+
+
+
