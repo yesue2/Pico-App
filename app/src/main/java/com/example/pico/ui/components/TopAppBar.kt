@@ -9,6 +9,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
 import com.example.pico.ui.theme.PicoTheme
 
@@ -19,6 +20,7 @@ fun TopAppBar(screen: String/*, navController: NavController*/) {
         title = {
             Text(
                 text = screen,
+                fontSize = 23.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onTertiary
             )
