@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.pico.R
-가import com.example.pico.ui.components.BottomAppBar
+import com.example.pico.ui.components.BottomAppBar
 import com.example.pico.ui.components.GoalCard
 import com.example.pico.ui.components.TaskCard
 import com.example.pico.ui.components.TopAppBar
