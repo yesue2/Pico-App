@@ -8,16 +8,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.pico.ui.components.TopAppBar
 import com.example.pico.ui.theme.PicoTheme
+import com.example.pico.ui.views.AddScreen
 import com.example.pico.ui.views.HomeScreen
+import com.example.pico.ui.views.ScheduleScreen
 import com.example.pico.ui.views.StartScreen1
 import com.example.pico.ui.views.StartScreen2
 import com.example.pico.ui.views.StartScreen3
@@ -53,6 +52,8 @@ fun Main() {
             composable("start2") { StartScreen2(navController) }
             composable("start3") { StartScreen3(navController) }
             composable("home") { HomeScreen(navController) }
+            composable("schedule") { ScheduleScreen(navController) }
+            composable("add") { AddScreen(navController) }
         }
     }
 }
