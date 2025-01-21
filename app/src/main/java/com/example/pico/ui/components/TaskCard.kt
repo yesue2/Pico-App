@@ -1,19 +1,12 @@
 package com.example.pico.ui.components
 
 import android.content.res.Configuration
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -49,27 +42,7 @@ fun TaskCard(title: String, detail: String, icon: Painter, backgroundColor: Colo
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Box(
-                modifier = Modifier
-                    .size(45.dp)
-                    .background(color = backgroundColor, shape = /*CircleShape*/RoundedCornerShape(12.dp)),
-                contentAlignment = Alignment.Center
-
-            ) {
-                Image(painter = icon,
-                    contentDescription = null,
-                    modifier = Modifier.size(20.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            Column (
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(text = title, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                Text(text = detail, fontSize = 14.sp, color = Color.Gray)
-            }
+            TextBox(title = title, detail = detail, icon = icon, backgroundColor = backgroundColor)
             Text(
                 text = "자세히 보기",
                 fontSize = 13.sp,
