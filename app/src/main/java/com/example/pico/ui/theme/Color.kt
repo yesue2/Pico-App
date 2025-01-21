@@ -36,5 +36,7 @@ val BackYellow = Color(0xFFFFF5D9)
 val BackPink = Color(0xFFFFE0EB)
 val BackGreen = Color(0xFFDCFAF8)
 
+val BottomItemColor = Color(0xFF8696BB)
+
 
 
