@@ -48,8 +48,6 @@ fun AddTodoForm() {
                 .wrapContentHeight(),
             verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
-
-            // 제목 입력 필드
             InputField(
                 label = "제목",
                 placeholder = "무슨 일을 할까요?",
@@ -57,7 +55,6 @@ fun AddTodoForm() {
                 onValueChange = { title.value = it }
             )
 
-            // 날짜 입력 필드
             InputField(
                 label = "날짜",
                 placeholder = "언제까지 끝낼까요?",
@@ -65,7 +62,6 @@ fun AddTodoForm() {
                 onValueChange = { date.value = it }
             )
 
-            // 메모 입력 필드
             InputField(
                 label = "메모",
                 placeholder = "기억하고 싶은 말 남기기",
@@ -73,13 +69,9 @@ fun AddTodoForm() {
                 onValueChange = { memo.value = it }
             )
 
-            // 종류 선택 필드 (임시 대체)
-            Text(
-                text = "종류 선택 필드는 아직 구현되지 않음",
-                color = MaterialTheme.colorScheme.secondary
-            )
+            DropdownField(label = "종류", placeholder = "카테고리를 골라보세요!")
+            DropdownField(label = "중요도", placeholder = "얼마나 중요한가요?")
 
-            // 제출 버튼
             Box(
                 contentAlignment = Alignment.Center
             ) {
@@ -107,14 +99,13 @@ fun InputField(
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        // 라벨
         Text(
             text = label,
             color = MaterialTheme.colorScheme.secondary,
+            fontSize = 17.sp,
             modifier = Modifier.padding(bottom = 10.dp)
         )
 
-        // 입력 필드
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
@@ -122,7 +113,7 @@ fun InputField(
                 Text(
                     text = placeholder,
                     color = MaterialTheme.colorScheme.onSecondary,
-                    fontSize = 15.sp
+                    fontSize = 15.sp,
                 )
             },
             modifier = Modifier
@@ -145,7 +136,6 @@ fun InputField(
             isError = showError
         )
 
-        // 오류 메시지
         if (showError) {
             Text(
                 text = errorMessage,
