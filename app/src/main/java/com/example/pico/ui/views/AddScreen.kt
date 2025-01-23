@@ -39,7 +39,6 @@ fun AddScreen(navController: NavController) {
                 .padding(paddingValues)
                 .padding(16.dp)
                 .background(MaterialTheme.colorScheme.background),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
                 AddTodoListSection()

@@ -29,11 +29,12 @@ fun DropdownField(label: String, placeholder: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.tertiary)
     ) {
         Text(
             text = label,
             color = MaterialTheme.colorScheme.secondary,
-            modifier = Modifier.padding(bottom = 4.dp),
+            modifier = Modifier.padding(bottom = 15.dp),
             fontSize = 17.sp,
         )
 
