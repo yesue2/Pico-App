@@ -61,7 +61,7 @@ fun TodoListSection() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TaskList()
+        TaskList("어떤 일을 차근차근 해볼까요?")
     }
 }
 

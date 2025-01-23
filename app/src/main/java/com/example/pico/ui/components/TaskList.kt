@@ -20,8 +20,8 @@ import com.example.pico.ui.theme.BackYellow
 import com.example.pico.ui.theme.PicoTheme
 
 @Composable
-fun TaskList() {
-    CardBox(txt = "어떤 일을 차근차근 해볼까요?") {
+fun TaskList(comment: String) {
+    CardBox(txt = comment) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -72,6 +72,6 @@ fun TaskList() {
 @Composable
 fun TaskListPreview() {
     PicoTheme {
-        TaskList()
+        TaskList("어떤 일을 차근차근 해볼까요?")
     }
 }
