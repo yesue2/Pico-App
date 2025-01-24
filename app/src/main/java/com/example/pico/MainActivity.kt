@@ -10,6 +10,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -21,17 +22,25 @@ import com.example.pico.ui.views.ScheduleScreen
 import com.example.pico.ui.views.StartScreen1
 import com.example.pico.ui.views.StartScreen2
 import com.example.pico.ui.views.StartScreen3
+import com.example.pico.viewmodel.DailyTodoViewModel
+import com.example.pico.viewmodel.DailyTodoViewModelFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val app = application as TodoApp
+        val viewModelFactory = DailyTodoViewModelFactory(app.repository)
+        val viewModel =
+            ViewModelProvider(this, viewModelFactory).get(DailyTodoViewModel::class.java)
+
         setContent {
             PicoTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Main()
+                    Main(viewModel)
                 }
             }
         }
@@ -39,7 +48,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Main() {
+fun Main(viewModel: DailyTodoViewModel) {
     val navController = rememberNavController()
 
     Scaffold(
@@ -52,9 +61,9 @@ fun Main() {
             composable("start1") { StartScreen1(navController) }
             composable("start2") { StartScreen2(navController) }
             composable("start3") { StartScreen3(navController) }
-            composable("home") { HomeScreen(navController) }
-            composable("schedule") { ScheduleScreen(navController) }
-            composable("add") { AddScreen(navController) }
+            composable("home") { HomeScreen(navController = navController, viewModel = viewModel) }
+            composable("schedule") { ScheduleScreen(navController = navController, viewModel = viewModel) }
+            composable("add") { AddScreen(navController = navController, viewModel = viewModel) }
             composable("my") { MyScreen(navController) }
         }
     }

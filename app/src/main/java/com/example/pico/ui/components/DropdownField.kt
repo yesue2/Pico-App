@@ -1,31 +1,42 @@
 package com.example.pico.ui.components
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pico.R
-import com.example.pico.ui.theme.PicoTheme
 
 @Composable
-fun DropdownField(label: String, placeholder: String) {
+fun DropdownField(
+    label: String,
+    placeholder: String,
+    value: String,
+    options: List<String>,
+    onValueChange: (String) -> Unit,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    var selectedValue by remember { mutableStateOf(value) }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -41,7 +52,7 @@ fun DropdownField(label: String, placeholder: String) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { /* 드롭다운 클릭 처리 */ }
+                .clickable { expanded = !expanded }
                 .background(
                     color = MaterialTheme.colorScheme.tertiary,
                     shape = RoundedCornerShape(10.dp)
@@ -55,8 +66,8 @@ fun DropdownField(label: String, placeholder: String) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = placeholder,
-                color = MaterialTheme.colorScheme.onSecondary,
+                text = if (selectedValue.isNotEmpty()) selectedValue else placeholder,
+                color = if (selectedValue.isNotEmpty()) MaterialTheme.colorScheme.onBackground else MaterialTheme.colorScheme.onSecondary,
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = 8.dp),
@@ -71,17 +82,40 @@ fun DropdownField(label: String, placeholder: String) {
                 tint = MaterialTheme.colorScheme.onSecondary
             )
         }
-    }
-}
-
-
-@Preview(showBackground = true)
-@Preview(
-    showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark"
-)
-@Composable
-fun DropdownPreview() {
-    PicoTheme {
-        DropdownField(label = "종류", placeholder = "카테고리를 골라보세요!")
+        if (expanded) {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background)
+                    .border(
+                        width = 1.dp,
+                        color = Color(0xFFDFEAF2),
+                        shape = RoundedCornerShape(10.dp)
+                    )
+                    .padding(4.dp)
+                    .heightIn(max = 200.dp)
+            ) {
+                items(options.size) { index ->
+                    val option = options[index]
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                selectedValue = option
+                                onValueChange(option) // 선택된 값을 전달
+                                expanded = false
+                            }
+                            .padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = option,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            fontSize = 15.sp
+                        )
+                    }
+                }
+            }
+        }
     }
 }
