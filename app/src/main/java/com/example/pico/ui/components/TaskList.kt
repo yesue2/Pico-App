@@ -16,26 +16,27 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.pico.R
+import com.example.pico.data.daily.DailyTodoEntity
 import com.example.pico.ui.theme.BackYellow
 import com.example.pico.ui.theme.PicoTheme
 
 @Composable
-fun TaskList(comment: String) {
+fun TaskList(comment: String, todos: List<DailyTodoEntity>) {
     CardBox(txt = comment) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            val tasks = listOf(
+            /*val tasks = listOf(
                 "영은이 생일선물 사기" to "핸드크림",
                 "수빈, 연서 만나기" to "13시 판교역 2번출구",
                 "재활용 쓰레기 버리기" to "23시까지",
                 "토익 단어 외우기" to "Day.29",
                 "헬스장 가기" to "19 ~ 20시"
-            )
+            )*/
 
             Column() {
-                tasks.forEach { (title, detail) ->
+                todos.forEach { todo ->
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -44,8 +45,8 @@ fun TaskList(comment: String) {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         TextBox(
-                            title = title,
-                            detail = detail,
+                            title = todo.title,
+                            detail = todo.description,
                             icon = painterResource(id = R.drawable.ic_shopping),
                             backgroundColor = BackYellow
                         )
@@ -72,6 +73,6 @@ fun TaskList(comment: String) {
 @Composable
 fun TaskListPreview() {
     PicoTheme {
-        TaskList("어떤 일을 차근차근 해볼까요?")
+//        TaskList("어떤 일을 차근차근 해볼까요?")
     }
 }

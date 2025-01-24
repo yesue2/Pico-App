@@ -13,6 +13,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,9 +26,10 @@ import com.example.pico.ui.components.BottomAppBar
 import com.example.pico.ui.components.TaskList
 import com.example.pico.ui.components.TopAppBar
 import com.example.pico.ui.theme.PicoTheme
+import com.example.pico.viewmodel.DailyTodoViewModel
 
 @Composable
-fun ScheduleScreen(navController: NavController) {
+fun ScheduleScreen(navController: NavController, viewModel: DailyTodoViewModel) {
     Scaffold(
         topBar = { TopAppBar(screen = "Schedule") },
         bottomBar = { BottomAppBar(navController = navController) }
@@ -39,14 +42,16 @@ fun ScheduleScreen(navController: NavController) {
                 .background(MaterialTheme.colorScheme.background)
         ) {
             item {
-                TodoListSection()
+                TodoListSection(viewModel = viewModel)
             }
         }
     }
 }
 
 @Composable
-fun TodoListSection() {
+fun TodoListSection(viewModel: DailyTodoViewModel) {
+    val todos by viewModel.todos.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -61,7 +66,7 @@ fun TodoListSection() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TaskList("어떤 일을 차근차근 해볼까요?")
+        TaskList("어떤 일을 차근차근 해볼까요?", todos)
     }
 }
 
@@ -74,6 +79,6 @@ fun TodoListSection() {
 fun TaskListPreview() {
     val navController = rememberNavController()
     PicoTheme {
-        ScheduleScreen(navController)
+//        ScheduleScreen(navController)
     }
 }
