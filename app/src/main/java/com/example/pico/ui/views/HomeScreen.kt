@@ -15,6 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -32,9 +33,16 @@ import com.example.pico.ui.theme.BackBlue
 import com.example.pico.ui.theme.BackGreen
 import com.example.pico.ui.theme.BackYellow
 import com.example.pico.ui.theme.PicoTheme
+import com.example.pico.viewmodel.DailyTodoViewModel
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(navController: NavController, viewModel: DailyTodoViewModel) {
+
+    // Home 들어오면 room database 자동 삭제
+    LaunchedEffect(Unit) {
+        viewModel.deleteAllTodos()
+    }
+
     Scaffold(
         topBar = { TopAppBar(screen = "Home") },
         bottomBar = { BottomAppBar(navController = navController)}
@@ -172,6 +180,6 @@ fun AchievementChartSection() {
 fun HomePreview() {
     val navController = rememberNavController()
     PicoTheme {
-        HomeScreen(navController)
+//        HomeScreen(navController)
     }
 }
