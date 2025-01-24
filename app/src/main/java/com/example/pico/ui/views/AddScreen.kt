@@ -2,7 +2,6 @@ package com.example.pico.ui.views
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,9 +25,10 @@ import com.example.pico.ui.components.AddTodoForm
 import com.example.pico.ui.components.BottomAppBar
 import com.example.pico.ui.components.TopAppBar
 import com.example.pico.ui.theme.PicoTheme
+import com.example.pico.viewmodel.DailyTodoViewModel
 
 @Composable
-fun AddScreen(navController: NavController) {
+fun AddScreen(navController: NavController, viewModel: DailyTodoViewModel) {
     Scaffold(
         topBar = { TopAppBar(screen = "Add") },
         bottomBar = { BottomAppBar(navController = navController) }
@@ -41,14 +41,14 @@ fun AddScreen(navController: NavController) {
                 .background(MaterialTheme.colorScheme.background),
         ) {
             item {
-                AddTodoListSection()
+                AddTodoListSection(viewModel = viewModel)
             }
         }
     }
 }
 
 @Composable
-fun AddTodoListSection() {
+fun AddTodoListSection(viewModel: DailyTodoViewModel) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -64,7 +64,7 @@ fun AddTodoListSection() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        AddTodoForm()
+        AddTodoForm(viewModel = viewModel)
     }
 }
 
@@ -76,6 +76,6 @@ fun AddTodoListSection() {
 fun AddPreview() {
     val navController = rememberNavController()
     PicoTheme {
-        AddScreen(navController)
+//        AddScreen(navController, viewModel = DailyTodoViewModel())
     }
 }
