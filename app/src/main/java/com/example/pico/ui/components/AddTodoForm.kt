@@ -6,27 +6,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.pico.R
 import com.example.pico.data.daily.DailyTodoEntity
 import com.example.pico.ui.theme.PicoTheme
@@ -39,8 +26,6 @@ fun AddTodoForm(viewModel: DailyTodoViewModel) {
     val dueDate = remember { mutableStateOf("") }
     val importance = remember { mutableStateOf("") }
     val category = remember { mutableStateOf("") }
-
-    val icon = painterResource(id = R.drawable.ic_shopping)
 
     CardBox(txt = "어떤 일을 해볼까요?") {
         Column(
@@ -58,7 +43,7 @@ fun AddTodoForm(viewModel: DailyTodoViewModel) {
                 label = "종류",
                 placeholder = "카테고리를 골라보세요!",
                 value = category.value,
-                options = listOf("업무", "개인", "쇼핑", "공부", "가족 및 친구", "금융", "건강", "취미", "기타"),
+                options = listOf("업무", "개인", "쇼핑", "공부", "가족 및 친구", "금융", "건강", "취미", "집안일", "기타"),
                 onValueChange = { category.value = it }
             )
 
@@ -91,7 +76,7 @@ fun AddTodoForm(viewModel: DailyTodoViewModel) {
                     .fillMaxWidth()
             ) {
                 SummitButton(content = "Do it!") {
-                    // 사용자가 입력한 값을 ViewModel로 전달
+                    // 사용자가 입력한 값 ViewModel로 전달
                     val todo = DailyTodoEntity(
                         title = title.value,
                         description = description.value,
@@ -105,7 +90,8 @@ fun AddTodoForm(viewModel: DailyTodoViewModel) {
                             "금융" -> 6
                             "건강" -> 7
                             "취미" -> 8
-                            "기타" -> 9
+                            "집안일" -> 9
+                            "기타" -> 10
                             else -> 0
                         },
                         dueDate = dueDate.value.toLongOrNull(),
@@ -119,70 +105,6 @@ fun AddTodoForm(viewModel: DailyTodoViewModel) {
                     viewModel.insertDaily(todo)
                 }
             }
-        }
-    }
-}
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun InputField(
-    label: String,
-    placeholder: String,
-    value: String,
-    onValueChange: (String) -> Unit,
-    showError: Boolean = false,
-    errorMessage: String = "필수 입력 항목입니다."
-) {
-    val keyboardController = LocalSoftwareKeyboardController.current
-
-    Column(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Text(
-            text = label,
-            color = MaterialTheme.colorScheme.secondary,
-            fontSize = 17.sp,
-            modifier = Modifier.padding(bottom = 10.dp)
-        )
-
-        OutlinedTextField(
-            value = value,
-            onValueChange = onValueChange,
-            placeholder = {
-                Text(
-                    text = placeholder,
-                    color = MaterialTheme.colorScheme.onSecondary,
-                    fontSize = 15.sp,
-                )
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight(),
-            shape = RoundedCornerShape(10.dp),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color(0xFFDFEAF2),
-                unfocusedBorderColor = Color(0xFFDFEAF2),
-                cursorColor = MaterialTheme.colorScheme.primary
-            ),
-            keyboardOptions = KeyboardOptions.Default.copy(
-                imeAction = ImeAction.Done
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    keyboardController?.hide()
-                }
-            ),
-            isError = showError
-        )
-
-        if (showError) {
-            Text(
-                text = errorMessage,
-                color = MaterialTheme.colorScheme.error,
-                fontSize = 12.sp,
-                modifier = Modifier.padding(top = 5.dp)
-            )
         }
     }
 }

@@ -46,7 +46,7 @@ fun DropdownField(
             text = label,
             color = MaterialTheme.colorScheme.secondary,
             modifier = Modifier.padding(bottom = 15.dp),
-            fontSize = 17.sp,
+            fontSize = 16.sp,
         )
 
         Row(
@@ -71,7 +71,7 @@ fun DropdownField(
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = 8.dp),
-                fontSize = 15.sp
+                fontSize = 13.sp
             )
             Icon(
                 painter = painterResource(id = R.drawable.ic_dropdown),
