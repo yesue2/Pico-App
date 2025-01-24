@@ -15,13 +15,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.pico.R
 import com.example.pico.data.daily.DailyTodoEntity
 import com.example.pico.ui.theme.BackYellow
 import com.example.pico.ui.theme.PicoTheme
 
 @Composable
-fun TaskList(comment: String, todos: List<DailyTodoEntity>) {
+fun TaskList(comment: String, todos: List<DailyTodoEntity>, navController: NavController) {
     CardBox(txt = comment) {
         Column(
             modifier = Modifier
@@ -40,7 +41,10 @@ fun TaskList(comment: String, todos: List<DailyTodoEntity>) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 8.dp),
+                            .padding(vertical = 8.dp)
+                            .clickable {
+                                navController.navigate("detail/${todo.id}")
+                            },
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
@@ -55,9 +59,6 @@ fun TaskList(comment: String, todos: List<DailyTodoEntity>) {
                             contentDescription = "상세보기 버튼",
                             modifier = Modifier
                                 .size(24.dp)
-                                .clickable {
-                                    // 상세보기 클릭 동작 처리
-                                }
                         )
                     }
                 }

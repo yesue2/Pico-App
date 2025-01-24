@@ -29,4 +29,7 @@ class DailyTodoRepository(private val dailyTodoDao: DailyTodoDao) {
         dailyTodoDao.deleteAllTodos()
     }
 
+    suspend fun getTodoById(todoId: Int): DailyTodoEntity? {
+        return dailyTodoDao.getTodoById(todoId)
+    }
 }

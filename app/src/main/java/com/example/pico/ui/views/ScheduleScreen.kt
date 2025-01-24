@@ -42,14 +42,14 @@ fun ScheduleScreen(navController: NavController, viewModel: DailyTodoViewModel) 
                 .background(MaterialTheme.colorScheme.background)
         ) {
             item {
-                TodoListSection(viewModel = viewModel)
+                TodoListSection(viewModel = viewModel, navController)
             }
         }
     }
 }
 
 @Composable
-fun TodoListSection(viewModel: DailyTodoViewModel) {
+fun TodoListSection(viewModel: DailyTodoViewModel, navController: NavController) {
     val todos by viewModel.todos.collectAsState()
 
     Column(
@@ -66,7 +66,7 @@ fun TodoListSection(viewModel: DailyTodoViewModel) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TaskList("어떤 일을 차근차근 해볼까요?", todos)
+        TaskList("어떤 일을 차근차근 해볼까요?", todos, navController)
     }
 }
 

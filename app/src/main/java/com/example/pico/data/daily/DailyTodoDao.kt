@@ -26,4 +26,8 @@ interface DailyTodoDao {
 
     @Query("DELETE FROM daily_table")
     suspend fun deleteAllTodos() // 모든 데이터 삭제
+
+    @Query("SELECT * FROM daily_table WHERE id = :todoId")
+    suspend fun getTodoById(todoId: Int): DailyTodoEntity?
+
 }

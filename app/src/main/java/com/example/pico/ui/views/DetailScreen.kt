@@ -1,6 +1,5 @@
 package com.example.pico.ui.views
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,28 +18,31 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.example.pico.TodoApp
 import com.example.pico.data.daily.DailyTodoEntity
 import com.example.pico.ui.components.BottomAppBar
 import com.example.pico.ui.components.CardBox
 import com.example.pico.ui.components.SummitButton
 import com.example.pico.ui.components.TopAppBar
-import com.example.pico.ui.theme.PicoTheme
 import com.example.pico.viewmodel.DailyTodoViewModel
-import com.example.pico.viewmodel.DailyTodoViewModelFactory
 
 @Composable
-fun DetailScreen(navController: NavController) {
+fun DetailScreen(navController: NavController, viewModel: DailyTodoViewModel, todoId: Int) {
+    LaunchedEffect(todoId) {
+        viewModel.loadTodoById(todoId)
+    }
+
+    val todo = viewModel.selectedTodo.collectAsState().value
+
+
     Scaffold(
         topBar = { TopAppBar(screen = "Detail") },
         bottomBar = { BottomAppBar(navController = navController) }
@@ -53,14 +55,18 @@ fun DetailScreen(navController: NavController) {
                 .background(MaterialTheme.colorScheme.background),
         ) {
             item {
-                DetailTodoListSection()
+                todo?.let { DetailTodoListSection(it, viewModel) } ?: Text(
+                    text = "뒤로가기를 눌러주세요",
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.error
+                )
             }
         }
     }
 }
 
 @Composable
-fun DetailTodoListSection() {
+fun DetailTodoListSection(todo: DailyTodoEntity, viewModel: DailyTodoViewModel) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -76,12 +82,12 @@ fun DetailTodoListSection() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        DetailTodoForm()
+        DetailTodoForm(todo, viewModel)
     }
 }
 
 @Composable
-fun DetailTodoForm() {
+fun DetailTodoForm(todo: DailyTodoEntity, viewModel: DailyTodoViewModel) {
     CardBox(txt = "해야할 일, 같이 확인해볼까요?") {
         Column(
             modifier = Modifier
@@ -90,43 +96,50 @@ fun DetailTodoForm() {
                 .padding(16.dp)
         ) {
             // 제목과 마감일
-            RowWithTitleAndDate()
+            RowWithTitleAndDate(todo)
 
             Spacer(modifier = Modifier.height(30.dp))
 
             // 메모와 세부 내용
-            DetailTodoMemo()
+            DetailTodoMemo(todo)
 
             Spacer(modifier = Modifier.height(40.dp))
 
             // 완료 여부와 버튼
-            CompletionSection()
+            CompletionSection(todo, viewModel)
         }
     }
 }
 
 @Composable
-fun RowWithTitleAndDate() {
+fun RowWithTitleAndDate(todo: DailyTodoEntity) {
+    val dDay = todo.dueDate?.let { dueDate ->
+        val daysRemaining = (dueDate - System.currentTimeMillis()) / (1000 * 60 * 60 * 24)
+        if (daysRemaining > 0) "D-$daysRemaining" else "기한 지남"
+    } ?: "마감일 없음"
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Column {
             Text(
-                text = "영은이 생일선물 사기",
+                text = todo.title,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.secondary
             )
             Text(
-                text = "2025년 2월 1일까지",
+                text = todo.dueDate?.let {
+                    java.text.SimpleDateFormat("yyyy년 MM월 dd일까지").format(it)
+                } ?: "마감일 없음",
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f)
             )
         }
 
         Text(
-            text = "D-7",
+            text = dDay,
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary
@@ -135,14 +148,10 @@ fun RowWithTitleAndDate() {
 }
 
 @Composable
-fun DetailTodoMemo() {
+fun DetailTodoMemo(todo: DailyTodoEntity) {
     Column {
         Text(
-            text = "핸드크림 \n\n" +
-                    "영은이가 좋아하는 우드향!\n" +
-                    "⇒ 이솝에서 우드향 나는 핸드크림이 있을까?\n\n" +
-                    "1. 연서랑 같이 판교 현대백화점에서 한 번만 말아보기\n" +
-                    "2. 온라인몰과 가격 비교",
+            text = todo.description.ifEmpty { "세부 내용 없음" },
             fontSize = 14.sp,
             color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.9f)
         )
@@ -150,7 +159,7 @@ fun DetailTodoMemo() {
 }
 
 @Composable
-fun CompletionSection() {
+fun CompletionSection(todo: DailyTodoEntity, viewModel: DailyTodoViewModel) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -167,8 +176,12 @@ fun CompletionSection() {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Switch(
-                checked = true, // 상태 변경
-                onCheckedChange = { /* 완료 상태 변경 처리 */ },
+                checked = false, // 상태 변경
+                onCheckedChange = { isCompleted ->
+                    val updatedTodo = todo.copy(isCompleted = isCompleted)
+                    viewModel.update(updatedTodo)
+                },
+
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = Color.White, // 활성 상태 버튼(원) 색상
                     uncheckedThumbColor = MaterialTheme.colorScheme.tertiary, // 비활성 상태 버튼(원) 색상
@@ -196,18 +209,5 @@ fun CompletionSection() {
 
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Preview(
-    showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark"
-)
-@Composable
-fun DetailPreview() {
-    val navController = rememberNavController()
-
-    PicoTheme {
-        DetailScreen(navController)
     }
 }
