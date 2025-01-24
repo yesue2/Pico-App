@@ -16,6 +16,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.pico.ui.theme.PicoTheme
 import com.example.pico.ui.views.AddScreen
+import com.example.pico.ui.views.DetailScreen
 import com.example.pico.ui.views.HomeScreen
 import com.example.pico.ui.views.MyScreen
 import com.example.pico.ui.views.ScheduleScreen
@@ -65,6 +66,7 @@ fun Main(viewModel: DailyTodoViewModel) {
             composable("schedule") { ScheduleScreen(navController = navController, viewModel = viewModel) }
             composable("add") { AddScreen(navController = navController, viewModel = viewModel) }
             composable("my") { MyScreen(navController) }
+            composable("detail") { DetailScreen(navController = navController) }
         }
     }
 }
