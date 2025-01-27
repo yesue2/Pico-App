@@ -1,6 +1,5 @@
 package com.example.pico.ui.views
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,20 +13,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.pico.ui.components.BottomAppBar
 import com.example.pico.ui.components.TaskList
 import com.example.pico.ui.components.TopAppBar
-import com.example.pico.ui.theme.PicoTheme
+import com.example.pico.viewmodel.DailyTodoViewModel
 
 @Composable
-fun MyScreen(navController: NavController) {
+fun MyScreen(navController: NavController, viewModel: DailyTodoViewModel) {
     Scaffold(
         topBar = { TopAppBar(screen = "My") },
         bottomBar = { BottomAppBar(navController = navController) }
@@ -41,7 +40,7 @@ fun MyScreen(navController: NavController) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
-                CompletedListSection()
+                CompletedDailyTodoListSection(viewModel, navController)
             }
 
             item {
@@ -52,7 +51,9 @@ fun MyScreen(navController: NavController) {
 }
 
 @Composable
-fun CompletedListSection() {
+fun CompletedDailyTodoListSection(viewModel: DailyTodoViewModel, navController: NavController) {
+    val completedDailyTodos by viewModel.completedDailyTodos.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -67,18 +68,6 @@ fun CompletedListSection() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TaskList("한 주 동안 이렇게 멋지게 해냈어요! \uD83D\uDC4F")
-    }
-}
-
-@Preview(showBackground = true)
-@Preview(
-    showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, name = "Dark"
-)
-@Composable
-fun MyScreenPreview() {
-    val navController = rememberNavController()
-    PicoTheme {
-        MyScreen(navController)
+        TaskList("한 주 동안 이렇게 멋지게 해냈어요! \uD83D\uDC4F", completedDailyTodos, navController)
     }
 }
