@@ -63,14 +63,9 @@ fun Main(viewModel: DailyTodoViewModel) {
             composable("start2") { StartScreen2(navController) }
             composable("start3") { StartScreen3(navController) }
             composable("home") { HomeScreen(navController = navController, viewModel = viewModel) }
-            composable("schedule") {
-                ScheduleScreen(
-                    navController = navController,
-                    viewModel = viewModel
-                )
-            }
+            composable("schedule") { ScheduleScreen(navController, viewModel) }
             composable("add") { AddScreen(navController = navController, viewModel = viewModel) }
-            composable("my") { MyScreen(navController) }
+            composable("my") { MyScreen(navController, viewModel) }
             composable("detail/{todoId}") { backStackEntry ->
                 val todoId = backStackEntry.arguments?.getString("todoId")!!.toInt()
                 DetailScreen(navController = navController, viewModel = viewModel, todoId = todoId)

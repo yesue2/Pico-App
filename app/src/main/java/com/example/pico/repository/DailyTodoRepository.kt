@@ -9,10 +9,6 @@ class DailyTodoRepository(private val dailyTodoDao: DailyTodoDao) {
         dailyTodoDao.insert(daily)
     }
 
-    fun getAllTodos(): Flow<List<DailyTodoEntity>> {
-        return dailyTodoDao.getAllTodos()
-    }
-
     suspend fun update(daily: DailyTodoEntity) {
         dailyTodoDao.update(daily)
     }
@@ -21,15 +17,23 @@ class DailyTodoRepository(private val dailyTodoDao: DailyTodoDao) {
         dailyTodoDao.deleteAllTodos(daily)
     }
 
+    fun getAllDailyTodos(): Flow<List<DailyTodoEntity>> {
+        return dailyTodoDao.getAllDailyTodos()
+    }
+
     fun getCompletedDailyTodos(): Flow<List<DailyTodoEntity>> {
-        return dailyTodoDao.getCompletedTodos()
+        return dailyTodoDao.getCompletedDailyTodos()
     }
 
     suspend fun deleteAllTodos() {
         dailyTodoDao.deleteAllTodos()
     }
 
-    suspend fun getTodoById(todoId: Int): DailyTodoEntity? {
-        return dailyTodoDao.getTodoById(todoId)
+    suspend fun deleteDailyTodoById(todoId: Int) {
+        return dailyTodoDao.deleteDailyTodoById(todoId)
+    }
+
+    suspend fun getDailyTodoById(todoId: Int): DailyTodoEntity? {
+        return dailyTodoDao.getDailyTodoById(todoId)
     }
 }

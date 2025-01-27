@@ -20,9 +20,15 @@ class DailyTodoViewModel(private val repository: DailyTodoRepository) : ViewMode
     private val _selectedTodo = MutableStateFlow<DailyTodoEntity?>(null)
     val selectedTodo: StateFlow<DailyTodoEntity?> get() = _selectedTodo
 
-    // 모든 Todos 리스트
-    val todos: StateFlow<List<DailyTodoEntity>> =
-        repository.getAllTodos()
+    // 실행 전인 모든 Todos 리스트
+    val allDailyTodos: StateFlow<List<DailyTodoEntity>> =
+        repository.getAllDailyTodos()
+            .map { it } // 필요 시 추가 처리 가능
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    // 실행 후인 모든 Todos 리스트
+    val completedDailyTodos: StateFlow<List<DailyTodoEntity>> =
+        repository.getCompletedDailyTodos()
             .map { it } // 필요 시 추가 처리 가능
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
@@ -33,12 +39,19 @@ class DailyTodoViewModel(private val repository: DailyTodoRepository) : ViewMode
         }
     }
 
+    // 특정 ID로 Todo 삭제
+    fun deleteDailyTodoById(todoId: Int) {
+        viewModelScope.launch {
+            repository.deleteDailyTodoById(todoId)
+        }
+    }
+
     // Todo 삽입
     fun insertDaily(todo: DailyTodoEntity) {
         viewModelScope.launch {
             repository.insertDaily(todo)
 
-            val todos = repository.getAllTodos()
+            val todos = repository.getAllDailyTodos()
             todos.collect {
                 Log.d("DailyTodo", "Saved Todo: $it")
             }
@@ -46,16 +59,16 @@ class DailyTodoViewModel(private val repository: DailyTodoRepository) : ViewMode
     }
 
     // Todo 업데이트
-    fun update(todo: DailyTodoEntity) {
+    fun updateDaily(todo: DailyTodoEntity) {
         viewModelScope.launch {
             repository.update(todo)
         }
     }
 
     // Todo ID로 데이터 가져오기
-    fun loadTodoById(todoId: Int) {
+    fun loadDailyTodoById(todoId: Int) {
         viewModelScope.launch {
-            val todo = repository.getTodoById(todoId) // suspend 함수 호출
+            val todo = repository.getDailyTodoById(todoId)
             _selectedTodo.value = todo
         }
     }

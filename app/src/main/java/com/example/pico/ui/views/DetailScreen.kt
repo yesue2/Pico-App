@@ -1,6 +1,7 @@
 package com.example.pico.ui.views
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -61,9 +62,7 @@ fun DetailScreen(navController: NavController, viewModel: DailyTodoViewModel, to
             TopAppBarDetail(
                 screen = "Detail",
                 onBackClick = {
-                    navController.navigate("schedule") {
-                        popUpTo("schedule") { inclusive = true }
-                    }
+                    navController.popBackStack()
                 }
             )
         },
@@ -173,8 +172,7 @@ fun RowWithTitleAndDate(todo: DailyTodoEntity) {
             Box(
                 modifier = Modifier
                     .size(50.dp)
-                    .background(color = backgroundColor, shape = MaterialTheme.shapes.medium)
-                    .padding(start = 4.dp),
+                    .background(color = backgroundColor, shape = MaterialTheme.shapes.medium),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
@@ -268,13 +266,31 @@ fun CompletionSection(todo: DailyTodoEntity, viewModel: DailyTodoViewModel, navC
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
+                .padding(top = 20.dp)
+                .fillMaxWidth()
+        ) {
+            Text(
+                text = "이 할 일 삭제하기",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier
+                    .padding(bottom = 8.dp)
+                    .clickable {
+                        viewModel.deleteDailyTodoById(todo.id)
+                        navController.popBackStack()
+                    }
+            )
+        }
+
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
                 .padding(top = 10.dp)
                 .fillMaxWidth()
         ) {
             SummitButton(content = "Back to list") {
-                navController.navigate("schedule") {
-                    popUpTo("schedule") { inclusive = true }
-                }
+                navController.popBackStack()
             }
         }
     }
