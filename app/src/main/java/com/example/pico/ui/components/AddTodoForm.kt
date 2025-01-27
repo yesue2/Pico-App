@@ -1,6 +1,7 @@
 package com.example.pico.ui.components
 
 import android.content.res.Configuration
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,16 +13,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.pico.R
+import androidx.navigation.NavController
 import com.example.pico.data.daily.DailyTodoEntity
 import com.example.pico.ui.theme.PicoTheme
 import com.example.pico.viewmodel.DailyTodoViewModel
 
 @Composable
-fun AddTodoForm(viewModel: DailyTodoViewModel) {
+fun AddTodoForm(navController: NavController, viewModel: DailyTodoViewModel) {
+    val context = LocalContext.current
     val title = remember { mutableStateOf("") }
     val description = remember { mutableStateOf("") }
     val dueDate = remember { mutableStateOf<Long?>(null) }
@@ -107,6 +109,12 @@ fun AddTodoForm(viewModel: DailyTodoViewModel) {
                         }
                     )
                     viewModel.insertDaily(todo)
+
+                    Toast.makeText(context, "할 일이 저장되었어요!\uD83C\uDF89 \n 멋진 하루를 만들어봐요 \uD83D\uDCAA", Toast.LENGTH_SHORT).show()
+
+                    navController.navigate("schedule") {
+                        popUpTo("add") { inclusive = true }
+                    }
                 }
             }
         }

@@ -41,14 +41,14 @@ fun AddScreen(navController: NavController, viewModel: DailyTodoViewModel) {
                 .background(MaterialTheme.colorScheme.background),
         ) {
             item {
-                AddTodoListSection(viewModel = viewModel)
+                AddTodoListSection(navController, viewModel)
             }
         }
     }
 }
 
 @Composable
-fun AddTodoListSection(viewModel: DailyTodoViewModel) {
+fun AddTodoListSection(navController: NavController, viewModel: DailyTodoViewModel) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -64,7 +64,7 @@ fun AddTodoListSection(viewModel: DailyTodoViewModel) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        AddTodoForm(viewModel = viewModel)
+        AddTodoForm(navController, viewModel)
     }
 }
 
