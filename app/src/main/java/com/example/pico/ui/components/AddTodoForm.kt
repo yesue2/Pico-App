@@ -23,9 +23,10 @@ import com.example.pico.viewmodel.DailyTodoViewModel
 fun AddTodoForm(viewModel: DailyTodoViewModel) {
     val title = remember { mutableStateOf("") }
     val description = remember { mutableStateOf("") }
-    val dueDate = remember { mutableStateOf("") }
+    val dueDate = remember { mutableStateOf<Long?>(null) }
     val importance = remember { mutableStateOf("") }
     val category = remember { mutableStateOf("") }
+    val showDatePicker = remember { mutableStateOf(false) }
 
     CardBox(txt = "어떤 일을 해볼까요?") {
         Column(
@@ -47,12 +48,14 @@ fun AddTodoForm(viewModel: DailyTodoViewModel) {
                 onValueChange = { category.value = it }
             )
 
-            InputField(
+            DatePickerField(
                 label = "날짜",
-                placeholder = "언제까지 끝낼까요?",
-                value = dueDate.value,
-                onValueChange = { dueDate.value = it }
+                selectedDate = dueDate.value,
+                onDateSelected = { date ->
+                    dueDate.value = date
+                }
             )
+
 
             InputField(
                 label = "메모",
@@ -94,7 +97,7 @@ fun AddTodoForm(viewModel: DailyTodoViewModel) {
                             "기타" -> 10
                             else -> 0
                         },
-                        dueDate = dueDate.value.toLongOrNull(),
+                        dueDate = dueDate.value,
                         importance = when (importance.value) {
                             "낮음" -> 1
                             "보통" -> 2
