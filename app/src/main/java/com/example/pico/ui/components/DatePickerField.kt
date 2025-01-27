@@ -73,7 +73,8 @@ fun DatePickerField(
                 IconButton(onClick = { showModal = true }) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_schedule),
-                        contentDescription = "Select date"
+                        contentDescription = "Select date",
+                        tint = MaterialTheme.colorScheme.onSecondary
                     )
                 }
             },
