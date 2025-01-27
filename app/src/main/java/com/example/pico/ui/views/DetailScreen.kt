@@ -10,8 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
@@ -20,18 +23,28 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.pico.R
 import com.example.pico.data.daily.DailyTodoEntity
 import com.example.pico.ui.components.BottomAppBar
 import com.example.pico.ui.components.CardBox
 import com.example.pico.ui.components.SummitButton
-import com.example.pico.ui.components.TopAppBar
+import com.example.pico.ui.components.TopAppBarDetail
+import com.example.pico.ui.theme.BackBlue
+import com.example.pico.ui.theme.BackGreen
+import com.example.pico.ui.theme.BackPink
+import com.example.pico.ui.theme.BackYellow
 import com.example.pico.viewmodel.DailyTodoViewModel
 
 @Composable
@@ -44,7 +57,16 @@ fun DetailScreen(navController: NavController, viewModel: DailyTodoViewModel, to
 
 
     Scaffold(
-        topBar = { TopAppBar(screen = "Detail") },
+        topBar = {
+            TopAppBarDetail(
+                screen = "Detail",
+                onBackClick = {
+                    navController.navigate("schedule") {
+                        popUpTo("schedule") { inclusive = true }
+                    }
+                }
+            )
+        },
         bottomBar = { BottomAppBar(navController = navController) }
     ) { paddingValues ->
         LazyColumn(
@@ -55,7 +77,7 @@ fun DetailScreen(navController: NavController, viewModel: DailyTodoViewModel, to
                 .background(MaterialTheme.colorScheme.background),
         ) {
             item {
-                todo?.let { DetailTodoListSection(it, viewModel) } ?: Text(
+                todo?.let { DetailTodoListSection(it, viewModel, navController) } ?: Text(
                     text = "뒤로가기를 눌러주세요",
                     fontSize = 16.sp,
                     color = MaterialTheme.colorScheme.error
@@ -66,7 +88,7 @@ fun DetailScreen(navController: NavController, viewModel: DailyTodoViewModel, to
 }
 
 @Composable
-fun DetailTodoListSection(todo: DailyTodoEntity, viewModel: DailyTodoViewModel) {
+fun DetailTodoListSection(todo: DailyTodoEntity, viewModel: DailyTodoViewModel, navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -82,12 +104,12 @@ fun DetailTodoListSection(todo: DailyTodoEntity, viewModel: DailyTodoViewModel) 
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        DetailTodoForm(todo, viewModel)
+        DetailTodoForm(todo, viewModel, navController)
     }
 }
 
 @Composable
-fun DetailTodoForm(todo: DailyTodoEntity, viewModel: DailyTodoViewModel) {
+fun DetailTodoForm(todo: DailyTodoEntity, viewModel: DailyTodoViewModel, navController: NavController) {
     CardBox(txt = "해야할 일, 같이 확인해볼까요?") {
         Column(
             modifier = Modifier
@@ -106,7 +128,7 @@ fun DetailTodoForm(todo: DailyTodoEntity, viewModel: DailyTodoViewModel) {
             Spacer(modifier = Modifier.height(40.dp))
 
             // 완료 여부와 버튼
-            CompletionSection(todo, viewModel)
+            CompletionSection(todo, viewModel, navController)
         }
     }
 }
@@ -126,26 +148,59 @@ fun RowWithTitleAndDate(todo: DailyTodoEntity) {
         }
     } ?: "마감일 없음"
 
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Column {
-            Text(
-                text = todo.title,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.secondary
-            )
-            Text(
-                text = todo.dueDate?.let {
-                    java.text.SimpleDateFormat("yyyy년 MM월 dd일까지").format(it)
-                } ?: "마감일 없음",
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f)
-            )
-        }
+    val (iconResId, backgroundColor) = when (todo.category) {
+        1 -> R.drawable.ic_company to BackBlue
+        2 -> R.drawable.ic_personal to BackPink
+        3 -> R.drawable.ic_shopping to BackYellow
+        4 -> R.drawable.ic_study to BackGreen
+        5 -> R.drawable.ic_friend to BackBlue
+        6 -> R.drawable.ic_invest to BackYellow
+        7 -> R.drawable.ic_health to BackGreen
+        8 -> R.drawable.ic_hobby to BackPink
+        9 -> R.drawable.ic_housework to BackPink
+        10 -> R.drawable.ic_etc to BackYellow
+        else -> R.drawable.ic_etc to Color.LightGray
+    }
 
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(
+                modifier = Modifier
+                    .size(50.dp)
+                    .background(color = backgroundColor, shape = MaterialTheme.shapes.medium)
+                    .padding(start = 4.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(id = iconResId),
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp),
+                    tint = Color.Unspecified
+                )
+            }
+            Spacer(modifier = Modifier.width(15.dp))
+            Column {
+                Text(
+                    text = todo.title,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.secondary
+                )
+                Text(
+                    text = todo.dueDate?.let {
+                        java.text.SimpleDateFormat("yyyy년 MM월 dd일까지").format(it)
+                    } ?: "마감일 없음",
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f)
+                )
+            }
+        }
         Text(
             text = dDay,
             fontSize = 14.sp,
@@ -167,7 +222,9 @@ fun DetailTodoMemo(todo: DailyTodoEntity) {
 }
 
 @Composable
-fun CompletionSection(todo: DailyTodoEntity, viewModel: DailyTodoViewModel) {
+fun CompletionSection(todo: DailyTodoEntity, viewModel: DailyTodoViewModel, navController: NavController) {
+    var isSwitchChecked by remember { mutableStateOf(todo.isCompleted) }
+
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -184,8 +241,9 @@ fun CompletionSection(todo: DailyTodoEntity, viewModel: DailyTodoViewModel) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Switch(
-                checked = false, // 상태 변경
+                checked = isSwitchChecked, // 상태 변경
                 onCheckedChange = { isCompleted ->
+                    isSwitchChecked = isCompleted
                     val updatedTodo = todo.copy(isCompleted = isCompleted)
                     viewModel.updateDaily(updatedTodo)
                 },
@@ -214,7 +272,9 @@ fun CompletionSection(todo: DailyTodoEntity, viewModel: DailyTodoViewModel) {
                 .fillMaxWidth()
         ) {
             SummitButton(content = "Back to list") {
-
+                navController.navigate("schedule") {
+                    popUpTo("schedule") { inclusive = true }
+                }
             }
         }
     }
