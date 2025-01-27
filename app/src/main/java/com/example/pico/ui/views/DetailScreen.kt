@@ -68,7 +68,6 @@ fun DetailScreen(navController: NavController, viewModel: DailyTodoViewModel, to
                 }
             )
         },
-        bottomBar = { BottomAppBar(navController = navController) }
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
