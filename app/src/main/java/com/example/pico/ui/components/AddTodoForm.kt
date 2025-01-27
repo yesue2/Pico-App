@@ -1,6 +1,7 @@
 package com.example.pico.ui.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,12 +27,13 @@ fun AddTodoForm(viewModel: DailyTodoViewModel) {
     val dueDate = remember { mutableStateOf<Long?>(null) }
     val importance = remember { mutableStateOf("") }
     val category = remember { mutableStateOf("") }
-    val showDatePicker = remember { mutableStateOf(false) }
 
     CardBox(txt = "어떤 일을 해볼까요?") {
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+
         ) {
             InputField(
                 label = "제목",
@@ -55,7 +57,6 @@ fun AddTodoForm(viewModel: DailyTodoViewModel) {
                     dueDate.value = date
                 }
             )
-
 
             InputField(
                 label = "메모",
