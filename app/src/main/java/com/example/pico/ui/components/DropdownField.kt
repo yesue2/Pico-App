@@ -102,7 +102,7 @@ fun DropdownField(
                             .fillMaxWidth()
                             .clickable {
                                 selectedValue = option
-                                onValueChange(option) // 선택된 값을 전달
+                                onValueChange(option)
                                 expanded = false
                             }
                             .padding(8.dp),

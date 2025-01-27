@@ -39,9 +39,9 @@ import com.example.pico.viewmodel.DailyTodoViewModel
 fun HomeScreen(navController: NavController, viewModel: DailyTodoViewModel) {
 
     // Home 들어오면 room database 자동 삭제
-    LaunchedEffect(Unit) {
+/*    LaunchedEffect(Unit) {
         viewModel.deleteAllTodos()
-    }
+    }*/
 
     Scaffold(
         topBar = { TopAppBar(screen = "Home") },
@@ -167,19 +167,5 @@ fun AchievementChartSection() {
         )
         Spacer(modifier = Modifier.height(16.dp))
         // Placeholder for achievement chart
-    }
-}
-
-@Preview(showBackground = true)
-@Preview(
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    name = "Dark"
-)
-@Composable
-fun HomePreview() {
-    val navController = rememberNavController()
-    PicoTheme {
-//        HomeScreen(navController)
     }
 }
