@@ -37,7 +37,7 @@ import com.example.pico.viewmodel.DailyTodoViewModel
 @Composable
 fun DetailScreen(navController: NavController, viewModel: DailyTodoViewModel, todoId: Int) {
     LaunchedEffect(todoId) {
-        viewModel.loadTodoById(todoId)
+        viewModel.loadDailyTodoById(todoId)
     }
 
     val todo = viewModel.selectedTodo.collectAsState().value
@@ -114,8 +114,16 @@ fun DetailTodoForm(todo: DailyTodoEntity, viewModel: DailyTodoViewModel) {
 @Composable
 fun RowWithTitleAndDate(todo: DailyTodoEntity) {
     val dDay = todo.dueDate?.let { dueDate ->
-        val daysRemaining = (dueDate - System.currentTimeMillis()) / (1000 * 60 * 60 * 24)
-        if (daysRemaining > 0) "D-$daysRemaining" else "기한 지남"
+        // 현재 날짜와 마감 날짜를 일 단위로 계산
+        val currentDate = System.currentTimeMillis() / (1000 * 60 * 60 * 24)
+        val dueDateDays = dueDate / (1000 * 60 * 60 * 24)
+        val daysRemaining = (dueDateDays - currentDate).toInt()
+
+        when {
+            daysRemaining > 0 -> "D-$daysRemaining"
+            daysRemaining == 0 -> "오늘 마감"
+            else -> "기한 지남"
+        }
     } ?: "마감일 없음"
 
     Row(
@@ -179,7 +187,7 @@ fun CompletionSection(todo: DailyTodoEntity, viewModel: DailyTodoViewModel) {
                 checked = false, // 상태 변경
                 onCheckedChange = { isCompleted ->
                     val updatedTodo = todo.copy(isCompleted = isCompleted)
-                    viewModel.update(updatedTodo)
+                    viewModel.updateDaily(updatedTodo)
                 },
 
                 colors = SwitchDefaults.colors(
