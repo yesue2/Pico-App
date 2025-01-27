@@ -1,6 +1,7 @@
 package com.example.pico.ui.components
 
 import android.content.res.Configuration
+import android.graphics.Color
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.pico.R
 import com.example.pico.data.daily.DailyTodoEntity
+import com.example.pico.ui.theme.BackBlue
+import com.example.pico.ui.theme.BackGreen
+import com.example.pico.ui.theme.BackPink
 import com.example.pico.ui.theme.BackYellow
 import com.example.pico.ui.theme.PicoTheme
 
@@ -28,16 +32,9 @@ fun TaskList(comment: String, todos: List<DailyTodoEntity>, navController: NavCo
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            /*val tasks = listOf(
-                "영은이 생일선물 사기" to "핸드크림",
-                "수빈, 연서 만나기" to "13시 판교역 2번출구",
-                "재활용 쓰레기 버리기" to "23시까지",
-                "토익 단어 외우기" to "Day.29",
-                "헬스장 가기" to "19 ~ 20시"
-            )*/
-
             Column() {
                 todos.forEach { todo ->
+                    val (iconRes, backgroundColor) = getCategoryIconAndColor(todo.category)
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -51,8 +48,8 @@ fun TaskList(comment: String, todos: List<DailyTodoEntity>, navController: NavCo
                         TextBox(
                             title = todo.title,
                             detail = todo.description,
-                            icon = painterResource(id = R.drawable.ic_shopping),
-                            backgroundColor = BackYellow
+                            icon = painterResource(id = iconRes),
+                            backgroundColor = backgroundColor
                         )
                         Icon(
                             painter = painterResource(id = R.drawable.ic_detail),
@@ -64,6 +61,22 @@ fun TaskList(comment: String, todos: List<DailyTodoEntity>, navController: NavCo
                 }
             }
         }
+    }
+}
+
+fun getCategoryIconAndColor(category: Int): Pair<Int, androidx.compose.ui.graphics.Color> {
+    return when (category) {
+        1 -> Pair(R.drawable.ic_company, BackBlue)
+        2 -> Pair(R.drawable.ic_personal, BackPink)
+        3 -> Pair(R.drawable.ic_shopping, BackYellow)
+        4 -> Pair(R.drawable.ic_study, BackGreen)
+        5 -> Pair(R.drawable.ic_friend, BackBlue)
+        6 -> Pair(R.drawable.ic_invest, BackYellow)
+        7 -> Pair(R.drawable.ic_health, BackGreen)
+        8 -> Pair(R.drawable.ic_hobby, BackPink)
+        9 -> Pair(R.drawable.ic_housework, BackPink)
+        10 -> Pair(R.drawable.ic_etc, BackYellow)
+        else -> Pair(R.drawable.ic_etc, BackYellow) // Default
     }
 }
 

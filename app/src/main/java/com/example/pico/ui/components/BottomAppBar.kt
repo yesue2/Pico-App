@@ -35,12 +35,7 @@ data class BottomNavItem(
 fun BottomAppBar(navController: NavController) {
     val items = listOf(
         BottomNavItem("home", R.drawable.ic_home, R.drawable.ic_home_selected, "Home"),
-        BottomNavItem(
-            "schedule",
-            R.drawable.ic_schedule,
-            R.drawable.ic_schedule_selected,
-            "Schedule"
-        ),
+        BottomNavItem("schedule", R.drawable.ic_schedule, R.drawable.ic_schedule_selected, "Schedule"),
         BottomNavItem("add", R.drawable.ic_add, R.drawable.ic_add_selected, "Add"),
         BottomNavItem("my", R.drawable.ic_my, R.drawable.ic_my_selected, "My")
     )
