@@ -57,12 +57,12 @@ fun HomeScreen(navController: NavController, viewModel: DailyTodoViewModel) {
             }
 
             item {
-                TodayTasksSection(viewModel)
+                TodayTasksSection(viewModel, navController)
             }
 
-            item {
+/*            item {
                 AchievementChartSection()
-            }
+            }*/
         }
     }
 }
@@ -103,7 +103,7 @@ fun MonthlyGoalSection() {
 }
 
 @Composable
-fun TodayTasksSection(viewModel: DailyTodoViewModel) {
+fun TodayTasksSection(viewModel: DailyTodoViewModel, navController: NavController) {
     val todayTasks = viewModel.todayTodos.collectAsState(initial = emptyList()).value
 
     Column(
@@ -127,7 +127,7 @@ fun TodayTasksSection(viewModel: DailyTodoViewModel) {
 
         if (todayTasks.isEmpty()) {
             Text(
-                text = "오늘 완료해야 할 일이 없습니다!",
+                text = "오늘 완료해야 할 일이 없어요!✨ \n새로운 할 일을 추가해서 목표를 만들어보세요\uD83D\uDE0A",
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onPrimary
             )
@@ -149,10 +149,12 @@ fun TodayTasksSection(viewModel: DailyTodoViewModel) {
                     }
 
                     TaskCard(
+                        id = task.id,
                         title = task.title,
                         detail = task.description,
                         icon = painterResource(id = iconResId),
-                        backgroundColor = backgroundColor
+                        backgroundColor = backgroundColor,
+                        navController = navController
                     )
                 }
             }

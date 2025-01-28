@@ -1,6 +1,7 @@
 package com.example.pico.ui.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,13 +22,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.pico.R
 import com.example.pico.ui.theme.BackBlue
 import com.example.pico.ui.theme.PicoTheme
 import com.example.pico.ui.theme.Yellow90
 
 @Composable
-fun TaskCard(title: String, detail: String, icon: Painter, backgroundColor: Color) {
+fun TaskCard(
+    id: Int,
+    title: String,
+    detail: String,
+    icon: Painter,
+    backgroundColor: Color,
+    navController: NavController
+) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -47,7 +57,10 @@ fun TaskCard(title: String, detail: String, icon: Painter, backgroundColor: Colo
                 text = "자세히 보기",
                 fontSize = 13.sp,
                 color = Yellow90,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.clickable {
+                    navController.navigate("detail/$id")
+                }
             )
         }
     }
@@ -59,9 +72,15 @@ fun TaskCard(title: String, detail: String, icon: Painter, backgroundColor: Colo
 )
 @Composable
 fun TaskPreview() {
+    val navController = rememberNavController()
     PicoTheme {
         TaskCard(
-            "수빈, 연서 만나기 ", "13시 판교역 2번 출구", painterResource(id = R.drawable.ic_friend), BackBlue
+            id = 1,
+            title = "수빈, 연서 만나기",
+            detail = "13시 판교역 2번 출구",
+            icon = painterResource(id = R.drawable.ic_friend),
+            backgroundColor = BackBlue,
+            navController = navController
         )
     }
 }

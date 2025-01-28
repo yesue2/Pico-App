@@ -34,6 +34,7 @@ interface DailyTodoDao {
     @Query("select * from daily_table where id = :todoId")
     suspend fun getDailyTodoById(todoId: Int): DailyTodoEntity?
 
+    // 오늘까지인 데이터 조회
     @Query("select * from daily_table where dueDate between :startOfDay and :endOfDay order by importance asc")
     fun getTodayTodos(startOfDay: Long, endOfDay: Long): Flow<List<DailyTodoEntity>>
 }
