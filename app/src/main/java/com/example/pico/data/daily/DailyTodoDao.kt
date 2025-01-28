@@ -23,15 +23,17 @@ interface DailyTodoDao {
     fun getCompletedDailyTodos(): Flow<List<DailyTodoEntity>>
 
     // 모든 데이터 삭제
-    @Query("DELETE FROM daily_table")
+    @Query("delete from daily_table")
     suspend fun deleteAllTodos()
 
     // id별 데이터 삭제 => Detail 화면
-    @Query("DELETE FROM daily_table WHERE id = :todoId")
+    @Query("delete from daily_table where id = :todoId")
     suspend fun deleteDailyTodoById(todoId: Int)
 
     // id별 데이터 조회 => Detail 화면
-    @Query("SELECT * FROM daily_table WHERE id = :todoId")
+    @Query("select * from daily_table where id = :todoId")
     suspend fun getDailyTodoById(todoId: Int): DailyTodoEntity?
 
+    @Query("select * from daily_table where dueDate between :startOfDay and :endOfDay order by importance asc")
+    fun getTodayTodos(startOfDay: Long, endOfDay: Long): Flow<List<DailyTodoEntity>>
 }

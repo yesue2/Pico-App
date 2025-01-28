@@ -36,4 +36,8 @@ class DailyTodoRepository(private val dailyTodoDao: DailyTodoDao) {
     suspend fun getDailyTodoById(todoId: Int): DailyTodoEntity? {
         return dailyTodoDao.getDailyTodoById(todoId)
     }
+
+    fun getTodayTodos(startOfDay: Long, endOfDay: Long): Flow<List<DailyTodoEntity>> {
+        return dailyTodoDao.getTodayTodos(startOfDay, endOfDay)
+    }
 }

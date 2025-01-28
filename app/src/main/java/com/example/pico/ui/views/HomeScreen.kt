@@ -1,6 +1,5 @@
 package com.example.pico.ui.views
 
-import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,14 +15,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.pico.R
 import com.example.pico.ui.components.BottomAppBar
 import com.example.pico.ui.components.GoalCard
@@ -31,17 +29,16 @@ import com.example.pico.ui.components.TaskCard
 import com.example.pico.ui.components.TopAppBar
 import com.example.pico.ui.theme.BackBlue
 import com.example.pico.ui.theme.BackGreen
+import com.example.pico.ui.theme.BackPink
 import com.example.pico.ui.theme.BackYellow
-import com.example.pico.ui.theme.PicoTheme
 import com.example.pico.viewmodel.DailyTodoViewModel
 
 @Composable
 fun HomeScreen(navController: NavController, viewModel: DailyTodoViewModel) {
 
-    // Home 들어오면 room database 자동 삭제
-/*    LaunchedEffect(Unit) {
-        viewModel.deleteAllTodos()
-    }*/
+    LaunchedEffect(Unit) {
+        viewModel.loadTodayTodos()
+    }
 
     Scaffold(
         topBar = { TopAppBar(screen = "Home") },
@@ -60,7 +57,7 @@ fun HomeScreen(navController: NavController, viewModel: DailyTodoViewModel) {
             }
 
             item {
-                TodayTasksSection()
+                TodayTasksSection(viewModel)
             }
 
             item {
@@ -106,11 +103,13 @@ fun MonthlyGoalSection() {
 }
 
 @Composable
-fun TodayTasksSection() {
+fun TodayTasksSection(viewModel: DailyTodoViewModel) {
+    val todayTasks = viewModel.todayTodos.collectAsState(initial = emptyList()).value
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)        
+            .padding(vertical = 8.dp)
     ) {
         Text(
             text = "오늘의 할 일",
@@ -126,26 +125,41 @@ fun TodayTasksSection() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        val tasks = listOf(
-            "수빈, 연서 만나기" to "13시 판교역 2번출구",
-            "영은이 생일선물 사기" to "핸드크림",
-            "재활용 쓰레기 버리기" to "23시까지",
-            "토익 단어 외우기" to "Day.29",
-            "헬스장 가기" to "19 ~ 20시"
-        )
+        if (todayTasks.isEmpty()) {
+            Text(
+                text = "오늘 완료해야 할 일이 없습니다!",
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+        } else {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                todayTasks.forEach { task ->
+                    val (iconResId, backgroundColor) = when (task.category) {
+                        1 -> R.drawable.ic_company to BackBlue
+                        2 -> R.drawable.ic_personal to BackPink
+                        3 -> R.drawable.ic_shopping to BackYellow
+                        4 -> R.drawable.ic_study to BackGreen
+                        5 -> R.drawable.ic_friend to BackBlue
+                        6 -> R.drawable.ic_invest to BackYellow
+                        7 -> R.drawable.ic_health to BackGreen
+                        8 -> R.drawable.ic_hobby to BackPink
+                        9 -> R.drawable.ic_housework to BackPink
+                        10 -> R.drawable.ic_etc to BackYellow
+                        else -> R.drawable.ic_etc to BackYellow
+                    }
 
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            tasks.forEach { (title, detail) ->
-                TaskCard(
-                    title = title,
-                    detail = detail,
-                    painterResource(id = R.drawable.ic_friend),
-                    BackBlue
-                )
+                    TaskCard(
+                        title = task.title,
+                        detail = task.description,
+                        icon = painterResource(id = iconResId),
+                        backgroundColor = backgroundColor
+                    )
+                }
             }
         }
     }
 }
+
 
 @Composable
 fun AchievementChartSection() {
