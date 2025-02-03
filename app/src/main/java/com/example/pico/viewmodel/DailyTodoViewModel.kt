@@ -90,7 +90,7 @@ class DailyTodoViewModel(private val repository: DailyTodoRepository) : ViewMode
     // Todo 업데이트
     fun updateDaily(todo: DailyTodoEntity) {
         viewModelScope.launch {
-            repository.update(todo)
+            repository.updateDaily(todo)
         }
     }
 

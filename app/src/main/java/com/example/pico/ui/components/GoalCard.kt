@@ -25,6 +25,8 @@ import com.example.pico.ui.theme.PicoTheme
 
 @Composable
 fun GoalCard(goal: String, progress: String, icon: Painter, backgroundColor: Color) {
+    val displayedGoal = if (goal.length > 10) goal.take(8) + "..." else goal
+
     Surface(
         modifier = Modifier
             .height(80.dp)
@@ -63,7 +65,7 @@ fun GoalCard(goal: String, progress: String, icon: Painter, backgroundColor: Col
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = goal,
+                    text = displayedGoal,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.ExtraBold,
                     color = MaterialTheme.colorScheme.secondary

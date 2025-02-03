@@ -6,13 +6,13 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface DailyTodoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(daily: DailyTodoEntity)
+    suspend fun insertDaily(daily: DailyTodoEntity)
 
     @Update
-    suspend fun update(daily: DailyTodoEntity)
+    suspend fun updateDaily(daily: DailyTodoEntity)
 
     @Delete
-    suspend fun deleteAllTodos(daily: DailyTodoEntity)
+    suspend fun deleteDaily(daily: DailyTodoEntity)
 
     // 미완료 task => schedule 화면
     @Query("select * from daily_table where isCompleted = 0 order by dueDate asc, importance asc")

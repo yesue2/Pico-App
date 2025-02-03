@@ -1,5 +1,7 @@
 package com.example.pico.ui.views
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,12 +12,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -32,12 +36,13 @@ import com.example.pico.ui.theme.BackGreen
 import com.example.pico.ui.theme.BackPink
 import com.example.pico.ui.theme.BackYellow
 import com.example.pico.viewmodel.DailyTodoViewModel
+import com.example.pico.viewmodel.MonthlyGoalViewModel
 
 @Composable
-fun HomeScreen(navController: NavController, viewModel: DailyTodoViewModel) {
+fun HomeScreen(navController: NavController, dailyViewModel: DailyTodoViewModel, monthlyViewModel: MonthlyGoalViewModel) {
 
     LaunchedEffect(Unit) {
-        viewModel.loadTodayTodos()
+        dailyViewModel.loadTodayTodos()
     }
 
     Scaffold(
@@ -53,11 +58,11 @@ fun HomeScreen(navController: NavController, viewModel: DailyTodoViewModel) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
-                MonthlyGoalSection()
+                MonthlyGoalSection(monthlyViewModel)
             }
 
             item {
-                TodayTasksSection(viewModel, navController)
+                TodayTasksSection(dailyViewModel, navController)
             }
 
 /*            item {
@@ -67,15 +72,19 @@ fun HomeScreen(navController: NavController, viewModel: DailyTodoViewModel) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MonthlyGoalSection() {
+fun MonthlyGoalSection(viewModel: MonthlyGoalViewModel) {
+    val currentMonth = remember { java.time.LocalDate.now().monthValue } // 현재 월 가져오기
+    val monthlyGoals = viewModel.getAllGoals().collectAsState(initial = emptyList()).value // DB에서 목표 불러오기
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
     ) {
         Text(
-            text = "1월의 목표",
+            text = "${currentMonth}월의 목표",
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground
@@ -88,15 +97,39 @@ fun MonthlyGoalSection() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            item {
-                GoalCard(goal = "책 3권 이상 읽기", progress = "2 / 3", painterResource(id = R.drawable.ic_study), BackGreen)
-            }
-            item {
-                GoalCard(goal = "50만원 저축", progress = "38 / 50", painterResource(id = R.drawable.ic_invest), BackYellow)
+        if (monthlyGoals.isEmpty()) {
+            Text(
+                text = "아직 목표가 없어요! 🎯\n새로운 목표를 추가해 보세요 🚀",
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onPrimary
+            )
+        } else {
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                items(monthlyGoals) { goal ->
+                    val (iconResId, backgroundColor) = when (goal.category) {
+                        1 -> R.drawable.ic_company to BackBlue
+                        2 -> R.drawable.ic_personal to BackPink
+                        3 -> R.drawable.ic_shopping to BackYellow
+                        4 -> R.drawable.ic_study to BackGreen
+                        5 -> R.drawable.ic_friend to BackBlue
+                        6 -> R.drawable.ic_invest to BackYellow
+                        7 -> R.drawable.ic_health to BackGreen
+                        8 -> R.drawable.ic_hobby to BackPink
+                        9 -> R.drawable.ic_housework to BackPink
+                        10 -> R.drawable.ic_etc to BackYellow
+                        else -> R.drawable.ic_etc to BackYellow
+                    }
+
+                    GoalCard(
+                        goal = goal.title,
+                        progress = "${goal.progress} / ${goal.goalAmount} ${goal.unit}",
+                        icon = painterResource(id = iconResId),
+                        backgroundColor = backgroundColor
+                    )
+                }
             }
         }
     }

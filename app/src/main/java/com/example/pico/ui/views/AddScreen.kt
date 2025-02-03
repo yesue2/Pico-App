@@ -25,15 +25,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.pico.ui.components.AddMonthlyGoalForm
 import com.example.pico.ui.components.AddTodoForm
 import com.example.pico.ui.components.BottomAppBar
 import com.example.pico.ui.components.ToggleButtonGroup
 import com.example.pico.ui.components.TopAppBar
 import com.example.pico.ui.theme.PicoTheme
 import com.example.pico.viewmodel.DailyTodoViewModel
+import com.example.pico.viewmodel.MonthlyGoalViewModel
 
 @Composable
-fun AddScreen(navController: NavController, viewModel: DailyTodoViewModel) {
+fun AddScreen(navController: NavController, dailyViewModel: DailyTodoViewModel, monthlyViewModel: MonthlyGoalViewModel) {
     Scaffold(
         topBar = { TopAppBar(screen = "Add") },
         bottomBar = { BottomAppBar(navController = navController) }
@@ -46,14 +48,14 @@ fun AddScreen(navController: NavController, viewModel: DailyTodoViewModel) {
                 .background(MaterialTheme.colorScheme.background),
         ) {
             item {
-                AddTodoListSection(navController, viewModel)
+                AddTodoListSection(navController, dailyViewModel, monthlyViewModel)
             }
         }
     }
 }
 
 @Composable
-fun AddTodoListSection(navController: NavController, viewModel: DailyTodoViewModel) {
+fun AddTodoListSection(navController: NavController, dailyViewModel: DailyTodoViewModel, monthlyViewModel: MonthlyGoalViewModel) {
     var selectedTab by remember { mutableStateOf("할 일") }
 
     Column(
@@ -78,7 +80,10 @@ fun AddTodoListSection(navController: NavController, viewModel: DailyTodoViewMod
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        AddTodoForm(navController, viewModel)
+        when (selectedTab) {
+            "할 일" -> AddTodoForm(navController, dailyViewModel)
+            "이달의 목표" -> AddMonthlyGoalForm(navController, monthlyViewModel)
+        }
     }
 }
 

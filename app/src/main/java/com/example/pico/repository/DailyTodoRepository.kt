@@ -6,15 +6,15 @@ import kotlinx.coroutines.flow.Flow
 
 class DailyTodoRepository(private val dailyTodoDao: DailyTodoDao) {
     suspend fun insertDaily(daily: DailyTodoEntity) {
-        dailyTodoDao.insert(daily)
+        dailyTodoDao.insertDaily(daily)
     }
 
-    suspend fun update(daily: DailyTodoEntity) {
-        dailyTodoDao.update(daily)
+    suspend fun updateDaily(daily: DailyTodoEntity) {
+        dailyTodoDao.updateDaily(daily)
     }
 
-    suspend fun deleteAllTodos(daily: DailyTodoEntity) {
-        dailyTodoDao.deleteAllTodos(daily)
+    suspend fun deleteDaily(daily: DailyTodoEntity) {
+        dailyTodoDao.deleteDaily(daily)
     }
 
     fun getAllDailyTodos(): Flow<List<DailyTodoEntity>> {
