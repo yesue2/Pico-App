@@ -14,6 +14,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,6 +27,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.pico.ui.components.AddTodoForm
 import com.example.pico.ui.components.BottomAppBar
+import com.example.pico.ui.components.ToggleButtonGroup
 import com.example.pico.ui.components.TopAppBar
 import com.example.pico.ui.theme.PicoTheme
 import com.example.pico.viewmodel.DailyTodoViewModel
@@ -49,6 +54,8 @@ fun AddScreen(navController: NavController, viewModel: DailyTodoViewModel) {
 
 @Composable
 fun AddTodoListSection(navController: NavController, viewModel: DailyTodoViewModel) {
+    var selectedTab by remember { mutableStateOf("할 일") }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -56,10 +63,17 @@ fun AddTodoListSection(navController: NavController, viewModel: DailyTodoViewMod
             .padding(vertical = 8.dp)
     ) {
         Text(
-            text = "할 일 추가하기",
+            text = "추가하기",
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        ToggleButtonGroup(
+            selectedTab = selectedTab,
+            onTabSelected = { selectedTab = it }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
