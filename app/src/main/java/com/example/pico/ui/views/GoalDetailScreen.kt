@@ -208,20 +208,25 @@ fun TitleAndDate(goal: MonthlyGoalEntity) {
         )
     }
 }
-
 @Composable
 fun ProgressMessage(goal: MonthlyGoalEntity) {
     val remaining = goal.goalAmount - goal.progress
+
+    // 오늘 날짜 (밀리초 단위)와 시작 날짜 차이 계산
+    val currentTime = System.currentTimeMillis()
+    val elapsedDays = ((currentTime - goal.startDate) / (1000 * 60 * 60 * 24)).toInt() + 1
+
     Text(
-        text = if (remaining > 0) {
-            "벌써 ${goal.progress}${goal.unit} 완료했어요!\n남은 ${remaining}${goal.unit}까지 달성해봐요! 화이팅✨"
-        } else {
-            "🎉 목표를 모두 달성했어요! 대단해요! 🎉"
+        text = when {
+            elapsedDays <= 0 -> "아직 목표 시작 전이에요! 🌱\n곧 시작될 챌린지를 기대해봐요!"
+            remaining > 0 -> "${elapsedDays}일 동안 벌써 ${goal.progress}${goal.unit} 완료했어요!\n남은 ${remaining}${goal.unit}까지 모두 달성해봐요! 화이팅✨"
+            else -> "🎉 목표를 모두 달성했어요! 대단해요! 🎉"
         },
         fontSize = 14.sp,
         color = MaterialTheme.colorScheme.onPrimary
     )
 }
+
 
 @Composable
 fun ProgressGrid(currentProgress: Int, goalAmount: Int) {
