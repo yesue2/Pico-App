@@ -1,7 +1,6 @@
 package com.example.pico.ui.components
 
 import android.content.res.Configuration
-import android.graphics.Color
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -40,7 +39,7 @@ fun TaskList(comment: String, todos: List<DailyTodoEntity>, navController: NavCo
                             .fillMaxWidth()
                             .padding(vertical = 8.dp)
                             .clickable {
-                                navController.navigate("detail/${todo.id}")
+                                navController.navigate("detailTodo/${todo.id}")
                             },
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween

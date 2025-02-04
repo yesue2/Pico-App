@@ -59,7 +59,7 @@ fun TaskCard(
                 color = Yellow90,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.clickable {
-                    navController.navigate("detail/$id")
+                    navController.navigate("detailTodo/$id")
                 }
             )
         }

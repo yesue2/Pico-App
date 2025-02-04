@@ -1,9 +1,9 @@
 package com.example.pico.ui.views
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -58,7 +58,7 @@ fun HomeScreen(navController: NavController, dailyViewModel: DailyTodoViewModel,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
-                MonthlyGoalSection(monthlyViewModel)
+                MonthlyGoalSection(monthlyViewModel, navController)
             }
 
             item {
@@ -72,9 +72,8 @@ fun HomeScreen(navController: NavController, dailyViewModel: DailyTodoViewModel,
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MonthlyGoalSection(viewModel: MonthlyGoalViewModel) {
+fun MonthlyGoalSection(viewModel: MonthlyGoalViewModel, navController: NavController) {
     val currentMonth = remember { java.time.LocalDate.now().monthValue } // 현재 월 가져오기
     val monthlyGoals = viewModel.getAllGoals().collectAsState(initial = emptyList()).value // DB에서 목표 불러오기
 
@@ -123,12 +122,17 @@ fun MonthlyGoalSection(viewModel: MonthlyGoalViewModel) {
                         else -> R.drawable.ic_etc to BackYellow
                     }
 
-                    GoalCard(
-                        goal = goal.title,
-                        progress = "${goal.progress} / ${goal.goalAmount} ${goal.unit}",
-                        icon = painterResource(id = iconResId),
-                        backgroundColor = backgroundColor
-                    )
+                    Box(
+                        modifier = Modifier
+                            .clickable { navController.navigate("detailGoal/${goal.id}") }
+                    ) {
+                        GoalCard(
+                            goal = goal.title,
+                            progress = "${goal.progress} / ${goal.goalAmount}${goal.unit}",
+                            icon = painterResource(id = iconResId),
+                            backgroundColor = backgroundColor
+                        )
+                    }
                 }
             }
         }

@@ -20,6 +20,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.pico.ui.theme.PicoTheme
 import com.example.pico.ui.views.AddScreen
 import com.example.pico.ui.views.DetailScreen
+import com.example.pico.ui.views.GoalDetailScreen
 import com.example.pico.ui.views.HomeScreen
 import com.example.pico.ui.views.MyScreen
 import com.example.pico.ui.views.ScheduleScreen
@@ -93,9 +94,13 @@ fun Main(dailyViewModel: DailyTodoViewModel, monthlyViewModel: MonthlyGoalViewMo
             composable("schedule") { ScheduleScreen(navController, dailyViewModel) }
             composable("add") { AddScreen(navController = navController, dailyViewModel, monthlyViewModel) }
             composable("my") { MyScreen(navController, dailyViewModel) }
-            composable("detail/{todoId}") { backStackEntry ->
+            composable("detailTodo/{todoId}") { backStackEntry ->
                 val todoId = backStackEntry.arguments?.getString("todoId")!!.toInt()
                 DetailScreen(navController = navController, viewModel = dailyViewModel, todoId = todoId)
+            }
+            composable("detailGoal/{goalId}") { backStackEntry ->
+                val goalId = backStackEntry.arguments?.getString("goalId")!!.toInt()
+                GoalDetailScreen(navController = navController, viewModel = monthlyViewModel, goalId = goalId)
             }
         }
     }

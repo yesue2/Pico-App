@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -39,25 +40,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.pico.R
-import com.example.pico.data.daily.DailyTodoEntity
-import com.example.pico.ui.components.BottomAppBar
+import com.example.pico.data.monthly.MonthlyGoalEntity
 import com.example.pico.ui.components.CardBox
+import com.example.pico.ui.components.ProgressGridContainer
 import com.example.pico.ui.components.SummitButton
 import com.example.pico.ui.components.TopAppBarDetail
 import com.example.pico.ui.theme.BackBlue
 import com.example.pico.ui.theme.BackGreen
 import com.example.pico.ui.theme.BackPink
 import com.example.pico.ui.theme.BackYellow
-import com.example.pico.viewmodel.DailyTodoViewModel
+import com.example.pico.viewmodel.MonthlyGoalViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
-fun DetailScreen(navController: NavController, viewModel: DailyTodoViewModel, todoId: Int) {
-    LaunchedEffect(todoId) {
-        viewModel.loadDailyTodoById(todoId)
+fun GoalDetailScreen(navController: NavController, viewModel: MonthlyGoalViewModel, goalId: Int) {
+    LaunchedEffect(goalId) {
+        viewModel.loadDailyTodoById(goalId)
     }
 
-    val todo = viewModel.selectedTodo.collectAsState().value
-
+    val goal = viewModel.selectedGoal.collectAsState().value
 
     Scaffold(
         topBar = {
@@ -77,8 +80,8 @@ fun DetailScreen(navController: NavController, viewModel: DailyTodoViewModel, to
                 .background(MaterialTheme.colorScheme.background),
         ) {
             item {
-                todo?.let { DetailTodoListSection(it, viewModel, navController) } ?: Text(
-                    text = "할 일 정보를 불러오는 데 실패했습니다. \n뒤로가기를 눌러주세요",
+                goal?.let { DetailGoalListSection(it, viewModel, navController) } ?: Text(
+                    text = "목표 정보를 불러오는 데 실패했습니다. \n뒤로가기를 눌러주세요",
                     fontSize = 16.sp,
                     color = MaterialTheme.colorScheme.error
                 )
@@ -88,7 +91,11 @@ fun DetailScreen(navController: NavController, viewModel: DailyTodoViewModel, to
 }
 
 @Composable
-fun DetailTodoListSection(todo: DailyTodoEntity, viewModel: DailyTodoViewModel, navController: NavController) {
+fun DetailGoalListSection(
+    goal: MonthlyGoalEntity,
+    viewModel: MonthlyGoalViewModel,
+    navController: NavController
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -96,7 +103,7 @@ fun DetailTodoListSection(todo: DailyTodoEntity, viewModel: DailyTodoViewModel, 
             .padding(vertical = 8.dp)
     ) {
         Text(
-            text = "할 일 자세히 보기",
+            text = "목표 자세히 보기",
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground
@@ -104,51 +111,46 @@ fun DetailTodoListSection(todo: DailyTodoEntity, viewModel: DailyTodoViewModel, 
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        DetailTodoForm(todo, viewModel, navController, "해야할 일, 같이 확인해볼까요?")
+        DetailGoalForm(goal, viewModel, navController)
     }
 }
 
 @Composable
-fun DetailTodoForm(todo: DailyTodoEntity, viewModel: DailyTodoViewModel, navController: NavController, txt: String) {
-    CardBox(txt = txt) {
+fun DetailGoalForm(
+    goal: MonthlyGoalEntity,
+    viewModel: MonthlyGoalViewModel,
+    navController: NavController
+) {
+    CardBox(txt = "이번 달 목표, 얼마나 해냈을까요?") {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
                 .padding(10.dp)
         ) {
-            // 제목과 마감일
-            RowWithTitleAndDate(todo)
+            TitleAndDate(goal)
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // 메모와 세부 내용
-            DetailTodoMemo(todo)
+            ProgressMessage(goal)
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            ProgressGridContainer(progress = goal.progress, goalAmount = goal.goalAmount)
 
             Spacer(modifier = Modifier.height(20.dp))
 
             // 완료 여부와 버튼
-            CompletionSection(todo, viewModel, navController)
+            GoalCompletionSection(goal, viewModel, navController)
         }
     }
 }
 
 @Composable
-fun RowWithTitleAndDate(todo: DailyTodoEntity) {
-    val dDay = todo.dueDate?.let { dueDate ->
-        // 현재 날짜와 마감 날짜를 일 단위로 계산
-        val currentDate = System.currentTimeMillis() / (1000 * 60 * 60 * 24)
-        val dueDateDays = dueDate / (1000 * 60 * 60 * 24)
-        val daysRemaining = (dueDateDays - currentDate).toInt()
+fun TitleAndDate(goal: MonthlyGoalEntity) {
+    val dDay = calculateDday(goal.endDate)
 
-        when {
-            daysRemaining > 0 -> "D-$daysRemaining"
-            daysRemaining == 0 -> "오늘 마감"
-            else -> "기한 지남"
-        }
-    } ?: "마감일 없음"
-
-    val (iconResId, backgroundColor) = when (todo.category) {
+    val (iconResId, backgroundColor) = when (goal.category) {
         1 -> R.drawable.ic_company to BackBlue
         2 -> R.drawable.ic_personal to BackPink
         3 -> R.drawable.ic_shopping to BackYellow
@@ -186,15 +188,13 @@ fun RowWithTitleAndDate(todo: DailyTodoEntity) {
             Spacer(modifier = Modifier.width(15.dp))
             Column {
                 Text(
-                    text = todo.title,
+                    text = goal.title,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.secondary
                 )
                 Text(
-                    text = todo.dueDate?.let {
-                        java.text.SimpleDateFormat("yyyy년 MM월 dd일까지").format(it)
-                    } ?: "마감일 없음",
+                    text = "${formatDate(goal.startDate)}부터\n${formatDate(goal.endDate)}까지",
                     fontSize = 14.sp,
                     color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.8f)
                 )
@@ -210,27 +210,58 @@ fun RowWithTitleAndDate(todo: DailyTodoEntity) {
 }
 
 @Composable
-fun DetailTodoMemo(todo: DailyTodoEntity) {
-    Column {
-        Text(
-            text = todo.description.ifEmpty { "세부 내용 없음" },
-            fontSize = 14.sp,
-            color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.9f)
-        )
-    }
+fun ProgressMessage(goal: MonthlyGoalEntity) {
+    val remaining = goal.goalAmount - goal.progress
+    Text(
+        text = if (remaining > 0) {
+            "벌써 ${goal.progress}${goal.unit} 완료했어요!\n남은 ${remaining}${goal.unit}까지 달성해봐요! 화이팅✨"
+        } else {
+            "🎉 목표를 모두 달성했어요! 대단해요! 🎉"
+        },
+        fontSize = 14.sp,
+        color = MaterialTheme.colorScheme.onPrimary
+    )
 }
 
 @Composable
-fun CompletionSection(todo: DailyTodoEntity, viewModel: DailyTodoViewModel, navController: NavController) {
+fun ProgressGrid(currentProgress: Int, goalAmount: Int) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            repeat(goalAmount) { index ->
+                Box(
+                    modifier = Modifier
+                        .size(24.dp)
+                        .background(
+                            color = if (index < currentProgress) MaterialTheme.colorScheme.primary else Color(0xFFFFE582),
+                            shape = RoundedCornerShape(5.dp)
+                        )
+                )
+            }
+        }
+    }
+}
+
+
+
+
+@Composable
+fun GoalCompletionSection(
+    goal: MonthlyGoalEntity,
+    viewModel: MonthlyGoalViewModel,
+    navController: NavController
+) {
     val context = LocalContext.current
-    var isSwitchChecked by remember { mutableStateOf(todo.isCompleted) }
+    var isSwitchChecked by remember { mutableStateOf(goal.isCompleted) }
 
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Text(
-            text = "할 일을 끝냈나요?",
+            text = "목표를 모두 달성했나요?",
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.secondary
@@ -244,8 +275,8 @@ fun CompletionSection(todo: DailyTodoEntity, viewModel: DailyTodoViewModel, navC
                 checked = isSwitchChecked, // 상태 변경
                 onCheckedChange = { isCompleted ->
                     isSwitchChecked = isCompleted
-                    val updatedTodo = todo.copy(isCompleted = isCompleted)
-                    viewModel.updateDaily(updatedTodo)
+                    val updatedGoal = goal.copy(isCompleted = isCompleted)
+                    viewModel.updateGoal(updatedGoal)
                 },
 
                 colors = SwitchDefaults.colors(
@@ -258,12 +289,14 @@ fun CompletionSection(todo: DailyTodoEntity, viewModel: DailyTodoViewModel, navC
                 )
             )
             Text(
-                text = "네, 깔끔하게 완료했어요! \uD83C\uDF89",
+                text = "네! 목표를 완벽히 해냈어요! \uD83C\uDF89",
                 fontSize = 16.sp,
                 modifier = Modifier.padding(end = 30.dp),
                 color = MaterialTheme.colorScheme.onSecondary
             )
         }
+
+        Spacer(modifier = Modifier.height(20.dp))
 
         Box(
             contentAlignment = Alignment.Center,
@@ -272,17 +305,17 @@ fun CompletionSection(todo: DailyTodoEntity, viewModel: DailyTodoViewModel, navC
                 .fillMaxWidth()
         ) {
             Text(
-                text = "이 할 일 삭제하기",
+                text = "이 목표 삭제하기",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .padding(bottom = 8.dp)
                     .clickable {
-                        viewModel.deleteDailyTodoById(todo.id)
+                        viewModel.deleteDailyTodoById(goal.id)
                         Toast.makeText(
                             context,
-                            "할 일이 삭제되었어요! \n 다음에 더 나은 계획으로 도전해봐요\uD83D\uDE0C",
+                            "목표가 삭제되었어요! 다음 목표도 화이팅! \uD83D\uDCAA",
                             Toast.LENGTH_SHORT
                         ).show()
                         navController.popBackStack()
@@ -300,5 +333,23 @@ fun CompletionSection(todo: DailyTodoEntity, viewModel: DailyTodoViewModel, navC
                 navController.popBackStack()
             }
         }
+    }
+}
+
+// 날짜 포맷 변환 함수
+fun formatDate(timestamp: Long): String {
+    val sdf = SimpleDateFormat("yyyy년 MM월 dd일", Locale.getDefault())
+    return sdf.format(Date(timestamp))
+}
+
+fun calculateDday(endDate: Long): String {
+    val currentDate = System.currentTimeMillis() / (1000 * 60 * 60 * 24)
+    val endDateDays = endDate / (1000 * 60 * 60 * 24)
+    val daysRemaining = (endDateDays - currentDate).toInt()
+
+    return when {
+        daysRemaining > 0 -> "D-$daysRemaining"
+        daysRemaining == 0 -> "오늘 마감"
+        else -> "기한 지남"
     }
 }

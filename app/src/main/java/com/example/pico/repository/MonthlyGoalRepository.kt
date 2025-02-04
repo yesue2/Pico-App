@@ -22,6 +22,10 @@ class MonthlyGoalRepository(private val monthlyGoalDao: MonthlyGoalDao) {
         return monthlyGoalDao.getGoalById(goalId)
     }
 
+    suspend fun deleteDailyTodoById(todoId: Int) {
+        return monthlyGoalDao.deleteGoalTodoById(todoId)
+    }
+
     fun getAllGoals(): Flow<List<MonthlyGoalEntity>> {
         return monthlyGoalDao.getAllGoals()
     }
