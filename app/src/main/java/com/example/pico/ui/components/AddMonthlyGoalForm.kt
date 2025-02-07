@@ -7,13 +7,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.pico.data.daily.DailyTodoEntity
 import com.example.pico.data.monthly.MonthlyGoalEntity
 import com.example.pico.viewmodel.MonthlyGoalViewModel
 
 @Composable
-fun AddMonthlyGoalForm(navController: NavController, viewModel: MonthlyGoalViewModel) {
+fun AddMonthlyGoalForm(navController: NavController, viewModel: MonthlyGoalViewModel = hiltViewModel()) {
     val context = LocalContext.current
 
     val title = remember { mutableStateOf("") }

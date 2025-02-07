@@ -2,6 +2,10 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
+
+    // Hilt
+    id("dagger.hilt.android.plugin")
+    id("com.google.dagger.hilt.android")
 }
 
 
@@ -71,6 +75,11 @@ dependencies {
     ksp("androidx.room:room-compiler:$room_version")
     // Room KTX (Coroutine 및 Flow 지원)
     implementation("androidx.room:room-ktx:$room_version")
+
+    // Hilt
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    ksp("com.google.dagger:hilt-android-compiler:2.51.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
 
     testImplementation("junit:junit:4.13.2")

@@ -38,6 +38,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.pico.R
 import com.example.pico.data.monthly.MonthlyGoalEntity
@@ -55,7 +56,11 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
-fun GoalDetailScreen(navController: NavController, viewModel: MonthlyGoalViewModel, goalId: Int) {
+fun GoalDetailScreen(
+    navController: NavController,
+    goalId: Int,
+    viewModel: MonthlyGoalViewModel = hiltViewModel()
+) {
     LaunchedEffect(goalId) {
         viewModel.loadDailyTodoById(goalId)
     }
@@ -80,7 +85,7 @@ fun GoalDetailScreen(navController: NavController, viewModel: MonthlyGoalViewMod
                 .background(MaterialTheme.colorScheme.background),
         ) {
             item {
-                goal?.let { DetailGoalListSection(it, viewModel, navController) } ?: Text(
+                goal?.let { DetailGoalListSection(it, navController) } ?: Text(
                     text = "목표 정보를 불러오는 데 실패했습니다. \n뒤로가기를 눌러주세요",
                     fontSize = 16.sp,
                     color = MaterialTheme.colorScheme.error
@@ -93,7 +98,6 @@ fun GoalDetailScreen(navController: NavController, viewModel: MonthlyGoalViewMod
 @Composable
 fun DetailGoalListSection(
     goal: MonthlyGoalEntity,
-    viewModel: MonthlyGoalViewModel,
     navController: NavController
 ) {
     Column(
@@ -111,14 +115,13 @@ fun DetailGoalListSection(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        DetailGoalForm(goal, viewModel, navController)
+        DetailGoalForm(goal, navController)
     }
 }
 
 @Composable
 fun DetailGoalForm(
     goal: MonthlyGoalEntity,
-    viewModel: MonthlyGoalViewModel,
     navController: NavController
 ) {
     CardBox(txt = "이번 달 목표, 얼마나 해냈을까요?") {
@@ -141,7 +144,7 @@ fun DetailGoalForm(
             Spacer(modifier = Modifier.height(20.dp))
 
             // 완료 여부와 버튼
-            GoalCompletionSection(goal, viewModel, navController)
+            GoalCompletionSection(goal, navController)
         }
     }
 }
@@ -208,6 +211,7 @@ fun TitleAndDate(goal: MonthlyGoalEntity) {
         )
     }
 }
+
 @Composable
 fun ProgressMessage(goal: MonthlyGoalEntity) {
     val remaining = goal.goalAmount - goal.progress
@@ -240,7 +244,9 @@ fun ProgressGrid(currentProgress: Int, goalAmount: Int) {
                     modifier = Modifier
                         .size(24.dp)
                         .background(
-                            color = if (index < currentProgress) MaterialTheme.colorScheme.primary else Color(0xFFFFE582),
+                            color = if (index < currentProgress) MaterialTheme.colorScheme.primary else Color(
+                                0xFFFFE582
+                            ),
                             shape = RoundedCornerShape(5.dp)
                         )
                 )
@@ -250,13 +256,11 @@ fun ProgressGrid(currentProgress: Int, goalAmount: Int) {
 }
 
 
-
-
 @Composable
 fun GoalCompletionSection(
     goal: MonthlyGoalEntity,
-    viewModel: MonthlyGoalViewModel,
-    navController: NavController
+    navController: NavController,
+    viewModel: MonthlyGoalViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     var isSwitchChecked by remember { mutableStateOf(goal.isCompleted) }

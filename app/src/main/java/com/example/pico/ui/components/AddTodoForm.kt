@@ -16,13 +16,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.pico.data.daily.DailyTodoEntity
 import com.example.pico.ui.theme.PicoTheme
 import com.example.pico.viewmodel.DailyTodoViewModel
 
 @Composable
-fun AddTodoForm(navController: NavController, viewModel: DailyTodoViewModel) {
+fun AddTodoForm(navController: NavController, viewModel: DailyTodoViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val title = remember { mutableStateOf("") }
     val description = remember { mutableStateOf("") }

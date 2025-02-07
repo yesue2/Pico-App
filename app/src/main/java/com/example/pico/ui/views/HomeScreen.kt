@@ -25,6 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.pico.R
 import com.example.pico.ui.components.BottomAppBar
@@ -39,7 +40,7 @@ import com.example.pico.viewmodel.DailyTodoViewModel
 import com.example.pico.viewmodel.MonthlyGoalViewModel
 
 @Composable
-fun HomeScreen(navController: NavController, dailyViewModel: DailyTodoViewModel, monthlyViewModel: MonthlyGoalViewModel) {
+fun HomeScreen(navController: NavController, dailyViewModel: DailyTodoViewModel = hiltViewModel()) {
 
     LaunchedEffect(Unit) {
         dailyViewModel.loadTodayTodos()
@@ -58,11 +59,11 @@ fun HomeScreen(navController: NavController, dailyViewModel: DailyTodoViewModel,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
-                MonthlyGoalSection(monthlyViewModel, navController)
+                MonthlyGoalSection(navController)
             }
 
             item {
-                TodayTasksSection(dailyViewModel, navController)
+                TodayTasksSection(navController)
             }
 
 /*            item {
@@ -73,7 +74,7 @@ fun HomeScreen(navController: NavController, dailyViewModel: DailyTodoViewModel,
 }
 
 @Composable
-fun MonthlyGoalSection(viewModel: MonthlyGoalViewModel, navController: NavController) {
+fun MonthlyGoalSection(navController: NavController, viewModel: MonthlyGoalViewModel = hiltViewModel()) {
     val currentMonth = remember { java.time.LocalDate.now().monthValue } // 현재 월 가져오기
     val monthlyGoals = viewModel.getAllGoals().collectAsState(initial = emptyList()).value // DB에서 목표 불러오기
 
@@ -140,7 +141,7 @@ fun MonthlyGoalSection(viewModel: MonthlyGoalViewModel, navController: NavContro
 }
 
 @Composable
-fun TodayTasksSection(viewModel: DailyTodoViewModel, navController: NavController) {
+fun TodayTasksSection(navController: NavController, viewModel: DailyTodoViewModel = hiltViewModel()) {
     val todayTasks = viewModel.todayTodos.collectAsState(initial = emptyList()).value
 
     Column(

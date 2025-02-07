@@ -3,8 +3,11 @@ package com.example.pico.repository
 import com.example.pico.data.monthly.MonthlyGoalDao
 import com.example.pico.data.monthly.MonthlyGoalEntity
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class MonthlyGoalRepository(private val monthlyGoalDao: MonthlyGoalDao) {
+class MonthlyGoalRepository @Inject constructor(
+    private val monthlyGoalDao: MonthlyGoalDao
+) {
 
     suspend fun insertGoal(goal: MonthlyGoalEntity) {
         monthlyGoalDao.insertGoal(goal)

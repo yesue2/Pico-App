@@ -19,14 +19,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.pico.ui.components.BottomAppBar
 import com.example.pico.ui.components.TaskList
 import com.example.pico.ui.components.TopAppBar
 import com.example.pico.viewmodel.DailyTodoViewModel
+import com.example.pico.viewmodel.MonthlyGoalViewModel
 
 @Composable
-fun MyScreen(navController: NavController, viewModel: DailyTodoViewModel) {
+fun MyScreen(navController: NavController) {
     Scaffold(
         topBar = { TopAppBar(screen = "My") },
         bottomBar = { BottomAppBar(navController = navController) }
@@ -40,18 +42,18 @@ fun MyScreen(navController: NavController, viewModel: DailyTodoViewModel) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
-                CompletedDailyTodoListSection(viewModel, navController)
+                CompletedDailyTodoListSection(navController)
             }
 
             item {
-                AchievementChartSection()
+                CompletedGoalListSection(navController)
             }
         }
     }
 }
 
 @Composable
-fun CompletedDailyTodoListSection(viewModel: DailyTodoViewModel, navController: NavController) {
+fun CompletedDailyTodoListSection(navController: NavController, viewModel: DailyTodoViewModel = hiltViewModel()) {
     val completedDailyTodos by viewModel.completedDailyTodos.collectAsState()
 
     Column(
@@ -70,4 +72,9 @@ fun CompletedDailyTodoListSection(viewModel: DailyTodoViewModel, navController: 
 
         TaskList("한 주 동안 이렇게 멋지게 해냈어요! \uD83D\uDC4F", completedDailyTodos, navController)
     }
+}
+
+@Composable
+fun CompletedGoalListSection(navController: NavController, viewModel: MonthlyGoalViewModel = hiltViewModel()) {
+
 }

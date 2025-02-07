@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.pico.ui.components.BottomAppBar
 import com.example.pico.ui.components.TaskList
@@ -25,7 +26,7 @@ import com.example.pico.ui.components.TopAppBar
 import com.example.pico.viewmodel.DailyTodoViewModel
 
 @Composable
-fun ScheduleScreen(navController: NavController, viewModel: DailyTodoViewModel) {
+fun ScheduleScreen(navController: NavController) {
     Scaffold(
         topBar = { TopAppBar(screen = "Schedule") },
         bottomBar = { BottomAppBar(navController = navController) }
@@ -38,14 +39,14 @@ fun ScheduleScreen(navController: NavController, viewModel: DailyTodoViewModel) 
                 .background(MaterialTheme.colorScheme.background)
         ) {
             item {
-                DailyTodoListSection(viewModel = viewModel, navController)
+                DailyTodoListSection(navController)
             }
         }
     }
 }
 
 @Composable
-fun DailyTodoListSection(viewModel: DailyTodoViewModel, navController: NavController) {
+fun DailyTodoListSection(navController: NavController, viewModel: DailyTodoViewModel = hiltViewModel()) {
     val allDailyTodos by viewModel.allDailyTodos.collectAsState()
 
     Column(

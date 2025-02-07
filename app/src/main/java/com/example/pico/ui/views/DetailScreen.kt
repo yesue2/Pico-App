@@ -37,10 +37,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.pico.R
 import com.example.pico.data.daily.DailyTodoEntity
-import com.example.pico.ui.components.BottomAppBar
 import com.example.pico.ui.components.CardBox
 import com.example.pico.ui.components.SummitButton
 import com.example.pico.ui.components.TopAppBarDetail
@@ -51,7 +51,7 @@ import com.example.pico.ui.theme.BackYellow
 import com.example.pico.viewmodel.DailyTodoViewModel
 
 @Composable
-fun DetailScreen(navController: NavController, viewModel: DailyTodoViewModel, todoId: Int) {
+fun DetailScreen(navController: NavController, viewModel: DailyTodoViewModel = hiltViewModel(), todoId: Int) {
     LaunchedEffect(todoId) {
         viewModel.loadDailyTodoById(todoId)
     }
@@ -77,7 +77,7 @@ fun DetailScreen(navController: NavController, viewModel: DailyTodoViewModel, to
                 .background(MaterialTheme.colorScheme.background),
         ) {
             item {
-                todo?.let { DetailTodoListSection(it, viewModel, navController) } ?: Text(
+                todo?.let { DetailTodoListSection(it, navController) } ?: Text(
                     text = "할 일 정보를 불러오는 데 실패했습니다. \n뒤로가기를 눌러주세요",
                     fontSize = 16.sp,
                     color = MaterialTheme.colorScheme.error
@@ -88,7 +88,10 @@ fun DetailScreen(navController: NavController, viewModel: DailyTodoViewModel, to
 }
 
 @Composable
-fun DetailTodoListSection(todo: DailyTodoEntity, viewModel: DailyTodoViewModel, navController: NavController) {
+fun DetailTodoListSection(
+    todo: DailyTodoEntity,
+    navController: NavController
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -104,12 +107,16 @@ fun DetailTodoListSection(todo: DailyTodoEntity, viewModel: DailyTodoViewModel, 
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        DetailTodoForm(todo, viewModel, navController, "해야할 일, 같이 확인해볼까요?")
+        DetailTodoForm(todo, navController, "해야할 일, 같이 확인해볼까요?")
     }
 }
 
 @Composable
-fun DetailTodoForm(todo: DailyTodoEntity, viewModel: DailyTodoViewModel, navController: NavController, txt: String) {
+fun DetailTodoForm(
+    todo: DailyTodoEntity,
+    navController: NavController,
+    txt: String
+) {
     CardBox(txt = txt) {
         Column(
             modifier = Modifier
@@ -128,7 +135,7 @@ fun DetailTodoForm(todo: DailyTodoEntity, viewModel: DailyTodoViewModel, navCont
             Spacer(modifier = Modifier.height(20.dp))
 
             // 완료 여부와 버튼
-            CompletionSection(todo, viewModel, navController)
+            CompletionSection(todo, navController)
         }
     }
 }
@@ -221,7 +228,11 @@ fun DetailTodoMemo(todo: DailyTodoEntity) {
 }
 
 @Composable
-fun CompletionSection(todo: DailyTodoEntity, viewModel: DailyTodoViewModel, navController: NavController) {
+fun CompletionSection(
+    todo: DailyTodoEntity,
+    navController: NavController,
+    viewModel: DailyTodoViewModel = hiltViewModel()
+) {
     val context = LocalContext.current
     var isSwitchChecked by remember { mutableStateOf(todo.isCompleted) }
 

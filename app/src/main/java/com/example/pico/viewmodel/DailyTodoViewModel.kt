@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.pico.data.daily.DailyTodoEntity
 import com.example.pico.repository.DailyTodoRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -13,10 +14,13 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.Calendar
+import javax.inject.Inject
 
 
-
-class DailyTodoViewModel(private val repository: DailyTodoRepository) : ViewModel() {
+@HiltViewModel
+class DailyTodoViewModel @Inject constructor(
+    private val repository: DailyTodoRepository
+) : ViewModel() {
 
     // StateFlow로 현재 선택된 Todo 데이터를 관리
     private val _selectedTodo = MutableStateFlow<DailyTodoEntity?>(null)
@@ -100,17 +104,5 @@ class DailyTodoViewModel(private val repository: DailyTodoRepository) : ViewMode
             val todo = repository.getDailyTodoById(todoId)
             _selectedTodo.value = todo
         }
-    }
-}
-
-
-class DailyTodoViewModelFactory(private val repository: DailyTodoRepository) :
-    ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(DailyTodoViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return DailyTodoViewModel(repository) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

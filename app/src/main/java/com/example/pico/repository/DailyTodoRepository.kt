@@ -3,8 +3,11 @@ package com.example.pico.repository
 import com.example.pico.data.daily.DailyTodoEntity
 import com.example.pico.data.daily.DailyTodoDao
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class DailyTodoRepository(private val dailyTodoDao: DailyTodoDao) {
+class DailyTodoRepository @Inject constructor(
+    private val dailyTodoDao: DailyTodoDao
+) {
     suspend fun insertDaily(daily: DailyTodoEntity) {
         dailyTodoDao.insertDaily(daily)
     }

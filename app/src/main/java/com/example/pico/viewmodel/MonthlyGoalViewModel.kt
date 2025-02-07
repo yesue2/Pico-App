@@ -5,12 +5,17 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.pico.data.monthly.MonthlyGoalEntity
 import com.example.pico.repository.MonthlyGoalRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MonthlyGoalViewModel(private val repository: MonthlyGoalRepository) : ViewModel() {
+@HiltViewModel
+class MonthlyGoalViewModel @Inject constructor(
+    private val repository: MonthlyGoalRepository
+) : ViewModel() {
     // StateFlow로 현재 선택된 goal 데이터를 관리
     private val _selectedGoal = MutableStateFlow<MonthlyGoalEntity?>(null)
     val selectedGoal: StateFlow<MonthlyGoalEntity?> get() = _selectedGoal
@@ -56,16 +61,5 @@ class MonthlyGoalViewModel(private val repository: MonthlyGoalRepository) : View
         viewModelScope.launch {
             repository.deleteDailyTodoById(goalId)
         }
-    }
-}
-
-class MonthlyGoalViewModelFactory(private val repository: MonthlyGoalRepository) :
-    ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(MonthlyGoalViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return MonthlyGoalViewModel(repository) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

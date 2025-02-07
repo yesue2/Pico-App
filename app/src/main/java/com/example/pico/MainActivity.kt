@@ -1,10 +1,10 @@
 package com.example.pico
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -13,7 +13,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -28,26 +27,23 @@ import com.example.pico.ui.views.StartScreen1
 import com.example.pico.ui.views.StartScreen2
 import com.example.pico.ui.views.StartScreen3
 import com.example.pico.viewmodel.DailyTodoViewModel
-import com.example.pico.viewmodel.DailyTodoViewModelFactory
 import com.example.pico.viewmodel.MonthlyGoalViewModel
-import com.example.pico.viewmodel.MonthlyGoalViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private lateinit var sharedPreferences: SharedPreferences
+
+    private val dailyViewModel: DailyTodoViewModel by viewModels()
+    private val monthlyViewModel: MonthlyGoalViewModel by viewModels()
+
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedPreferences = getSharedPreferences("PicoPreferences", Context.MODE_PRIVATE)
         val isFirstLaunch = sharedPreferences.getBoolean("isFirstLaunch", true)
-
-        val app = application as TodoApp
-        val dailyViewModelFactory = DailyTodoViewModelFactory(app.dailyRepository)
-        val monthlyViewModelFactory = MonthlyGoalViewModelFactory(app.monthlyRepository)
-        val dailyViewModel =
-            ViewModelProvider(this, dailyViewModelFactory).get(DailyTodoViewModel::class.java)
-        val monthlyViewModel =
-            ViewModelProvider(this, monthlyViewModelFactory).get(MonthlyGoalViewModel::class.java)
 
         setContent {
             PicoTheme {
@@ -55,7 +51,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Main(dailyViewModel, monthlyViewModel, isFirstLaunch) {
+                    Main(isFirstLaunch) {
                         // 앱 최초 실행 여부 저장
                         sharedPreferences.edit().putBoolean("isFirstLaunch", false).apply()
                     }
@@ -66,7 +62,10 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Main(dailyViewModel: DailyTodoViewModel, monthlyViewModel: MonthlyGoalViewModel, isFirstLaunch: Boolean, onFirstLaunchComplete: () -> Unit) {
+fun Main(
+    isFirstLaunch: Boolean,
+    onFirstLaunchComplete: () -> Unit
+) {
     val navController = rememberNavController()
 
     LaunchedEffect(isFirstLaunch) {
@@ -90,17 +89,24 @@ fun Main(dailyViewModel: DailyTodoViewModel, monthlyViewModel: MonthlyGoalViewMo
                 // 랜딩 페이지 완료 시 호출
                 LaunchedEffect(Unit) { onFirstLaunchComplete() }
             }
-            composable("home") { HomeScreen(navController = navController, dailyViewModel, monthlyViewModel) }
-            composable("schedule") { ScheduleScreen(navController, dailyViewModel) }
-            composable("add") { AddScreen(navController = navController, dailyViewModel, monthlyViewModel) }
-            composable("my") { MyScreen(navController, dailyViewModel) }
+            composable("home") {
+                HomeScreen(
+                    navController = navController
+                )
+            }
+            composable("schedule") { ScheduleScreen(navController) }
+            composable("add") { AddScreen(navController = navController) }
+            composable("my") { MyScreen(navController) }
             composable("detailTodo/{todoId}") { backStackEntry ->
                 val todoId = backStackEntry.arguments?.getString("todoId")!!.toInt()
-                DetailScreen(navController = navController, viewModel = dailyViewModel, todoId = todoId)
+                DetailScreen(
+                    navController = navController,
+                    todoId = todoId
+                )
             }
             composable("detailGoal/{goalId}") { backStackEntry ->
                 val goalId = backStackEntry.arguments?.getString("goalId")!!.toInt()
-                GoalDetailScreen(navController = navController, viewModel = monthlyViewModel, goalId = goalId)
+                GoalDetailScreen(navController = navController, goalId = goalId)
             }
         }
     }
