@@ -62,10 +62,17 @@ fun GoalDetailScreen(
     viewModel: MonthlyGoalViewModel = hiltViewModel()
 ) {
     LaunchedEffect(goalId) {
-        viewModel.loadDailyTodoById(goalId)
+        viewModel.loadGoalById(goalId)
     }
 
     val goal = viewModel.selectedGoal.collectAsState().value
+
+    // 자동 진행 방식 업데이트 실행
+    LaunchedEffect(goal?.trackingMethod) {
+        if (goal != null && goal.trackingMethod in listOf("매일 1 자동 증가", "목표에 맞춰 자동 계산")) {
+            viewModel.updateProgressAutomatically(goal)
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -122,7 +129,8 @@ fun DetailGoalListSection(
 @Composable
 fun DetailGoalForm(
     goal: MonthlyGoalEntity,
-    navController: NavController
+    navController: NavController,
+    viewModel: MonthlyGoalViewModel = hiltViewModel()
 ) {
     CardBox(txt = "이번 달 목표, 얼마나 해냈을까요?") {
         Column(
@@ -139,9 +147,18 @@ fun DetailGoalForm(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            ProgressGridContainer(progress = goal.progress, goalAmount = goal.goalAmount)
+            // "진행률 표시 없음"이 아닐 경우 자동 진행도 증가 실행
+            if (goal.trackingMethod in listOf("매일 1 자동 증가", "목표에 맞춰 자동 계산")) {
+                LaunchedEffect(goal.trackingMethod) {
+                    viewModel.updateProgressAutomatically(goal)
+                }
+            }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            // ✅ "진행률 기록 안 하기"가 아닐 경우에만 진행도 UI 표시
+            if (goal.trackingMethod != "진행률 기록 안 하기") {
+                ProgressGridContainer(goal, viewModel)
+                Spacer(modifier = Modifier.height(20.dp))
+            }
 
             // 완료 여부와 버튼
             GoalCompletionSection(goal, navController)
@@ -281,10 +298,22 @@ fun GoalCompletionSection(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Switch(
-                checked = isSwitchChecked, // 상태 변경
+                checked = isSwitchChecked,
                 onCheckedChange = { isCompleted ->
                     isSwitchChecked = isCompleted
-                    val updatedGoal = goal.copy(isCompleted = isCompleted)
+                    val updatedProgress = if (isCompleted && goal.trackingMethod == "진행률 기록 안 하기") {
+                        goal.goalAmount // ✅ 완료 시 목표 수량으로 진행률 변경
+                    } else if (!isCompleted && goal.trackingMethod == "진행률 기록 안 하기") {
+                        0 // ✅ 미완료 시 진행률을 다시 0으로
+                    } else {
+                        goal.progress // ✅ 다른 방식의 경우 기존 값 유지
+                    }
+
+                    val updatedGoal = goal.copy(
+                        isCompleted = isCompleted,
+                        progress = updatedProgress
+                    )
+
                     viewModel.updateGoal(updatedGoal)
                 },
 
@@ -321,7 +350,7 @@ fun GoalCompletionSection(
                 modifier = Modifier
                     .padding(bottom = 8.dp)
                     .clickable {
-                        viewModel.deleteDailyTodoById(goal.id)
+                        viewModel.deleteGoalById(goal.id)
                         Toast.makeText(
                             context,
                             "목표가 삭제되었어요! 다음 목표도 화이팅! \uD83D\uDCAA",

@@ -90,7 +90,7 @@ class MonthlyGoalViewModelTest {
     }
 
     @Test
-    fun testLoadDailyTodoById() = runTest {
+    fun testLoadGoalById() = runTest {
         val goal = MonthlyGoalEntity(
             id = 1,
             title = "책 30권 읽기",
@@ -107,7 +107,7 @@ class MonthlyGoalViewModelTest {
 
         coEvery { repository.getGoalById(1) } returns goal
 
-        viewModel.loadDailyTodoById(1)
+        viewModel.loadGoalById(1)
 
         assertEquals(goal, viewModel.selectedGoal.value)
 

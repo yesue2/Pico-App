@@ -94,7 +94,7 @@ fun AddMonthlyGoalForm(navController: NavController, viewModel: MonthlyGoalViewM
                 label = "진행 방식",
                 placeholder = "목표를 어떻게 기록할까요?",
                 value = trackingMethod.value,
-                options = listOf("직접 입력", "하루 1 증가", "수동 체크", "자동 계산"),
+                options = listOf("직접 입력해서 증가", "매일 1 자동 증가", "목표에 맞춰 자동 계산", "진행률 기록 안 하기"),
                 onValueChange = { trackingMethod.value = it }
             )
 
@@ -105,6 +105,20 @@ fun AddMonthlyGoalForm(navController: NavController, viewModel: MonthlyGoalViewM
                     .fillMaxWidth()
             ) {
                 SummitButton(content = "Goal in!") {
+                    val initialProgress = when (trackingMethod.value) {
+                        "직접 입력해서 증가" -> progress.value // 사용자가 직접 입력한 값 유지
+                        "매일 1 자동 증가" -> 1 // 첫날 1부터 시작
+                        "진행률 기록 안 하기" -> 0 // 체크리스트처럼 처음에는 0으로 시작
+                        "목표에 맞춰 자동 계산" -> {
+                            val start = startDate.value ?: System.currentTimeMillis()
+                            val end = endDate.value ?: System.currentTimeMillis()
+                            val totalDays = ((end - start) / (1000 * 60 * 60 * 24)).toInt().coerceAtLeast(1)
+                            (goalAmount.value.toIntOrNull() ?: 0) / totalDays
+                        }
+
+                        else -> 0
+                    }
+
                     // 사용자가 입력한 값 ViewModel로 전달
                     val goal = MonthlyGoalEntity(
                         title = title.value,
@@ -132,7 +146,7 @@ fun AddMonthlyGoalForm(navController: NavController, viewModel: MonthlyGoalViewM
                         unit = unit.value,
                         startDate = startDate.value ?: System.currentTimeMillis(),
                         endDate = endDate.value ?: System.currentTimeMillis(),
-                        progress = progress.value,
+                        progress = initialProgress,
                         trackingMethod = trackingMethod.value
                     )
                     viewModel.insertGoal(goal)

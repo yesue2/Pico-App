@@ -25,7 +25,7 @@ class MonthlyGoalRepository @Inject constructor(
         return monthlyGoalDao.getGoalById(goalId)
     }
 
-    suspend fun deleteDailyTodoById(todoId: Int) {
+    suspend fun deleteGoalById(todoId: Int) {
         return monthlyGoalDao.deleteGoalTodoById(todoId)
     }
 
