@@ -33,10 +33,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    private val dailyViewModel: DailyTodoViewModel by viewModels()
-    private val monthlyViewModel: MonthlyGoalViewModel by viewModels()
-
     @Inject
     lateinit var sharedPreferences: SharedPreferences
 
