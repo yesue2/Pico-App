@@ -59,8 +59,18 @@ class MonthlyGoalViewModel @Inject constructor(
     // 진행 방식에 따라 자동으로 진행도를 증가시키는 함수
     fun updateProgressAutomatically(goal: MonthlyGoalEntity) {
         viewModelScope.launch {
+            val currentTime = System.currentTimeMillis()
+
+            // 목표 시작일부터 오늘까지 지난 일수 계산
+            val daysPassed = ((currentTime - goal.startDate) / (1000 * 60 * 60 * 24)).toInt() + 1
+
+            // 진행 방식에 따라 진행도를 업데이트
             val updatedProgress = when (goal.trackingMethod) {
-                "매일 1 자동 증가" -> goal.progress + 1
+                "매일 1 자동 증가" -> {
+                    // 시작일 이후 진행된 일수 만큼 진행도가 있어야 함
+                    val expectedProgress = daysPassed.coerceAtLeast(0) // 최소 0 이상
+                    expectedProgress.coerceAtMost(goal.goalAmount) // 목표량 초과 방지
+                }
                 "목표에 맞춰 자동 계산" -> calculateProgress(goal)
                 else -> goal.progress
             }
