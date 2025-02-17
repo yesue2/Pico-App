@@ -75,13 +75,17 @@ class MonthlyGoalViewModel @Inject constructor(
                 else -> goal.progress
             }
 
-            if (updatedProgress != goal.progress) {
+            // 목표량을 초과하면 completeGoal 호출
+            if (updatedProgress >= goal.goalAmount) {
+                completeGoal(goal, true)
+            } else if (updatedProgress != goal.progress) {
                 val updatedGoal = goal.copy(progress = updatedProgress)
                 repository.updateGoal(updatedGoal)
                 _selectedGoal.value = updatedGoal
             }
         }
     }
+
 
     // 목표 완료 시 진행도를 목표량으로 변경
     fun completeGoal(goal: MonthlyGoalEntity, isCompleted: Boolean) {
@@ -100,8 +104,12 @@ class MonthlyGoalViewModel @Inject constructor(
     fun updateProgressManually(goal: MonthlyGoalEntity, newProgress: Int) {
         val updatedGoal = goal.copy(progress = newProgress)
         viewModelScope.launch {
-            repository.updateGoal(updatedGoal)
-            _selectedGoal.value = updatedGoal // UI 자동 업데이트
+            if (newProgress >= goal.goalAmount) {
+                completeGoal(goal, true)
+            } else {
+                repository.updateGoal(updatedGoal)
+                _selectedGoal.value = updatedGoal // UI 자동 업데이트
+            }
         }
     }
 

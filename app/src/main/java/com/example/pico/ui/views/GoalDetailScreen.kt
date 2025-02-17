@@ -301,6 +301,7 @@ fun GoalCompletionSection(
                 checked = isSwitchChecked,
                 onCheckedChange = { isCompleted ->
                     isSwitchChecked = isCompleted
+                    viewModel.completeGoal(goal, isCompleted)
                     val updatedProgress = if (isCompleted && goal.trackingMethod == "진행률 기록 안 하기") {
                         goal.goalAmount // ✅ 완료 시 목표 수량으로 진행률 변경
                     } else if (!isCompleted && goal.trackingMethod == "진행률 기록 안 하기") {
