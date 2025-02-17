@@ -55,6 +55,7 @@ fun AddTodoForm(navController: NavController, viewModel: DailyTodoViewModel = hi
 
             DatePickerField(
                 label = "날짜",
+                context = "언제까지 끝낼까요?",
                 selectedDate = dueDate.value,
                 onDateSelected = { date ->
                     dueDate.value = date

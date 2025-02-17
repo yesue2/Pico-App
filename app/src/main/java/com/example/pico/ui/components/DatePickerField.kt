@@ -32,6 +32,7 @@ import java.util.Locale
 @Composable
 fun DatePickerField(
     label: String,
+    context: String,
     selectedDate: Long?,
     onDateSelected: (Long?) -> Unit
 ) {
@@ -53,7 +54,7 @@ fun DatePickerField(
             onValueChange = { },
             placeholder = {
                 Text(
-                    text = "언제까지 끝낼까요?",
+                    text = context,
                     color = MaterialTheme.colorScheme.onSecondary,
                     fontSize = 13.sp
                 )

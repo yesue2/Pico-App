@@ -80,11 +80,13 @@ fun AddMonthlyGoalForm(navController: NavController, viewModel: MonthlyGoalViewM
             // 기간 설정
             DatePickerField(
                 label = "시작 날짜",
+                context = "언제부터 시작 할까요?",
                 selectedDate = startDate.value,
                 onDateSelected = { startDate.value = it }
             )
             DatePickerField(
                 label = "종료 날짜",
+                context = "언제 끝낼까요?",
                 selectedDate = endDate.value,
                 onDateSelected = { endDate.value = it }
             )
