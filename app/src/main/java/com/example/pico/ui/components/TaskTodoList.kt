@@ -25,7 +25,7 @@ import com.example.pico.ui.theme.BackYellow
 import com.example.pico.ui.theme.PicoTheme
 
 @Composable
-fun TaskList(comment: String, todos: List<DailyTodoEntity>, navController: NavController) {
+fun TaskTodoList(comment: String, todos: List<DailyTodoEntity>, navController: NavController) {
     CardBox(txt = comment) {
         Column(
             modifier = Modifier

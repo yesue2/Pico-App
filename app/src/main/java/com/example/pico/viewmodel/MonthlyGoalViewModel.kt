@@ -7,7 +7,10 @@ import com.example.pico.repository.MonthlyGoalRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -54,6 +57,23 @@ class MonthlyGoalViewModel @Inject constructor(
         viewModelScope.launch {
             repository.deleteGoalById(goalId)
         }
+    }
+
+    // ✅ 모든 목표 리스트 (전체)
+    val allMonthlyGoals: StateFlow<List<MonthlyGoalEntity>> =
+        repository.getAllGoals()
+            .map { it }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    // ✅ 완료된 목표 리스트 (isCompleted == true)
+    val completedMonthlyGoals: StateFlow<List<MonthlyGoalEntity>> =
+        repository.getCompletedGoals()
+            .map { it }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    // ✅ 완료된 목표 가져오는 함수 추가
+    fun getCompletedGoals(): Flow<List<MonthlyGoalEntity>> {
+        return repository.getCompletedGoals()
     }
 
     // 진행 방식에 따라 자동으로 진행도를 증가시키는 함수

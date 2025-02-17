@@ -32,6 +32,7 @@ import com.example.pico.ui.components.BottomAppBar
 import com.example.pico.ui.components.GoalCard
 import com.example.pico.ui.components.TaskCard
 import com.example.pico.ui.components.TopAppBar
+import com.example.pico.ui.components.getCategoryIconAndColor
 import com.example.pico.ui.theme.BackBlue
 import com.example.pico.ui.theme.BackGreen
 import com.example.pico.ui.theme.BackPink
@@ -109,19 +110,7 @@ fun MonthlyGoalSection(navController: NavController, viewModel: MonthlyGoalViewM
                 modifier = Modifier.fillMaxWidth()
             ) {
                 items(monthlyGoals) { goal ->
-                    val (iconResId, backgroundColor) = when (goal.category) {
-                        1 -> R.drawable.ic_company to BackBlue
-                        2 -> R.drawable.ic_personal to BackPink
-                        3 -> R.drawable.ic_shopping to BackYellow
-                        4 -> R.drawable.ic_study to BackGreen
-                        5 -> R.drawable.ic_friend to BackBlue
-                        6 -> R.drawable.ic_invest to BackYellow
-                        7 -> R.drawable.ic_health to BackGreen
-                        8 -> R.drawable.ic_hobby to BackPink
-                        9 -> R.drawable.ic_housework to BackPink
-                        10 -> R.drawable.ic_etc to BackYellow
-                        else -> R.drawable.ic_etc to BackYellow
-                    }
+                    val (iconResId, backgroundColor) = getCategoryIconAndColor(goal.category)
 
                     Box(
                         modifier = Modifier

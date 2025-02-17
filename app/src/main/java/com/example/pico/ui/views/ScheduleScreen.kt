@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.pico.ui.components.BottomAppBar
-import com.example.pico.ui.components.TaskList
+import com.example.pico.ui.components.TaskTodoList
 import com.example.pico.ui.components.TopAppBar
 import com.example.pico.viewmodel.DailyTodoViewModel
 
@@ -63,6 +63,6 @@ fun DailyTodoListSection(navController: NavController, viewModel: DailyTodoViewM
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TaskList("어떤 일을 차근차근 해볼까요?", allDailyTodos, navController)
+        TaskTodoList("어떤 일을 차근차근 해볼까요?", allDailyTodos, navController)
     }
 }

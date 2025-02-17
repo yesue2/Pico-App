@@ -30,4 +30,7 @@ interface MonthlyGoalDao {
     // id별 데이터 삭제 => Detail 화면
     @Query("delete from monthly_goals where id = :goalId")
     suspend fun deleteGoalTodoById(goalId: Int)
+
+    @Query("SELECT * FROM monthly_goals WHERE isCompleted = 1")
+    fun getCompletedGoals(): Flow<List<MonthlyGoalEntity>>
 }

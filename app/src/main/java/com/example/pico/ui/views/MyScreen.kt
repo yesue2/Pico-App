@@ -22,7 +22,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.pico.ui.components.BottomAppBar
-import com.example.pico.ui.components.TaskList
+import com.example.pico.ui.components.TaskGoalList
+import com.example.pico.ui.components.TaskTodoList
 import com.example.pico.ui.components.TopAppBar
 import com.example.pico.viewmodel.DailyTodoViewModel
 import com.example.pico.viewmodel.MonthlyGoalViewModel
@@ -70,11 +71,28 @@ fun CompletedDailyTodoListSection(navController: NavController, viewModel: Daily
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TaskList("한 주 동안 이렇게 멋지게 해냈어요! \uD83D\uDC4F", completedDailyTodos, navController)
+        TaskTodoList("매일 멋지게 해냈어요! \uD83D\uDC4F", completedDailyTodos, navController)
     }
 }
 
 @Composable
 fun CompletedGoalListSection(navController: NavController, viewModel: MonthlyGoalViewModel = hiltViewModel()) {
+    val completedGoals by viewModel.completedMonthlyGoals.collectAsState()
 
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+    ) {
+        Text(
+            text = "지난 목표 목록",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        TaskGoalList("매달 끈기가 대단해요! 👍", completedGoals, navController)
+    }
 }
