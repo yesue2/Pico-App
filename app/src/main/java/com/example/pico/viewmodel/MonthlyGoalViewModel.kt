@@ -97,7 +97,20 @@ class MonthlyGoalViewModel @Inject constructor(
 
     // 자동 계산 로직
     private fun calculateProgress(goal: MonthlyGoalEntity): Int {
-        val totalDays = (goal.endDate - goal.startDate) / (1000 * 60 * 60 * 24)
-        return if (totalDays > 0) (goal.goalAmount / totalDays).toInt() else goal.goalAmount
+        val currentTime = System.currentTimeMillis()
+
+        // 목표 기간 (일 단위)
+        val totalDays = ((goal.endDate - goal.startDate) / (1000 * 60 * 60 * 24)).toInt()
+
+        // 오늘까지 경과한 일수 (현재 시간 - 시작 날짜)
+        val daysPassed = ((currentTime - goal.startDate) / (1000 * 60 * 60 * 24)).toInt()
+
+        return when {
+            totalDays <= 0 -> goal.goalAmount // 목표 기간이 0일이면 목표량 그대로 반환
+            daysPassed < 0 -> 0 // 아직 목표 시작 전이면 진행도 0
+            daysPassed >= totalDays -> goal.goalAmount // 목표 종료일이 지나면 목표량 반환
+            else -> ((goal.goalAmount.toDouble() / (totalDays + 1)) * (daysPassed + 1)).toInt() // 마지막 날까지 균등 배분
+        }
     }
+
 }
