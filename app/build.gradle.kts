@@ -10,11 +10,11 @@ plugins {
 
 
 android {
-    namespace = "com.example.pico"
+    namespace = "com.yesue2.pico"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.pico"
+        applicationId = "com.yesue2.pico"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
