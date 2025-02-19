@@ -176,7 +176,10 @@ fun RowWithTitleAndDate(todo: DailyTodoEntity) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier.weight(1f),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Box(
                 modifier = Modifier
                     .size(50.dp)
@@ -191,7 +194,9 @@ fun RowWithTitleAndDate(todo: DailyTodoEntity) {
                 )
             }
             Spacer(modifier = Modifier.width(15.dp))
-            Column {
+            Column (
+                modifier = Modifier.weight(1f)
+            ) {
                 Text(
                     text = todo.title,
                     fontSize = 18.sp,
@@ -211,7 +216,8 @@ fun RowWithTitleAndDate(todo: DailyTodoEntity) {
             text = dDay,
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(start = 5.dp)
         )
     }
 }

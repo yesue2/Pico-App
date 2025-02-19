@@ -191,7 +191,10 @@ fun TitleAndDate(goal: MonthlyGoalEntity) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier.weight(1f),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Box(
                 modifier = Modifier
                     .size(50.dp)
@@ -206,7 +209,9 @@ fun TitleAndDate(goal: MonthlyGoalEntity) {
                 )
             }
             Spacer(modifier = Modifier.width(15.dp))
-            Column {
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
                 Text(
                     text = goal.title,
                     fontSize = 18.sp,
