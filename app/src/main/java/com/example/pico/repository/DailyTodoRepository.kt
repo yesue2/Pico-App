@@ -16,10 +16,6 @@ class DailyTodoRepository @Inject constructor(
         dailyTodoDao.updateDaily(daily)
     }
 
-    suspend fun deleteDaily(daily: DailyTodoEntity) {
-        dailyTodoDao.deleteDaily(daily)
-    }
-
     fun getAllDailyTodos(): Flow<List<DailyTodoEntity>> {
         return dailyTodoDao.getAllDailyTodos()
     }

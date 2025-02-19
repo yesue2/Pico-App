@@ -33,10 +33,6 @@ class MonthlyGoalRepository @Inject constructor(
         return monthlyGoalDao.getAllGoals()
     }
 
-    suspend fun incrementProgress(goalId: Int) {
-        monthlyGoalDao.incrementProgress(goalId)
-    }
-
     fun getCompletedGoals(): Flow<List<MonthlyGoalEntity>> {
         return monthlyGoalDao.getCompletedGoals()
     }
