@@ -31,6 +31,7 @@ import com.example.pico.ui.theme.PicoTheme
 @Composable
 fun TextBox(title: String, detail: String, icon: Painter, backgroundColor: Color) {
     val displayedTitle = if (title.length > 10) title.take(8) + "..." else title
+    val displayedContext = if (detail.length > 13) detail.take(11) + "..." else title
 
     Surface(
         color = MaterialTheme.colorScheme.tertiary
@@ -60,7 +61,7 @@ fun TextBox(title: String, detail: String, icon: Painter, backgroundColor: Color
                 modifier = Modifier.weight(1f)
             ) {
                 Text(text = displayedTitle, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                Text(text = detail, fontSize = 14.sp, color = Color.Gray)
+                Text(text = displayedContext, fontSize = 14.sp, color = Color.Gray)
             }
         }
     }
