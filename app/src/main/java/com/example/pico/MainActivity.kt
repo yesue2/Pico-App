@@ -13,6 +13,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -42,12 +43,14 @@ class MainActivity : ComponentActivity() {
         val isFirstLaunch = sharedPreferences.getBoolean("isFirstLaunch", true)
 
         setContent {
+            val navController = rememberNavController()
+
             PicoTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Main(isFirstLaunch) {
+                    Main(isFirstLaunch, navController) {
                         // 앱 최초 실행 여부 저장
                         sharedPreferences.edit().putBoolean("isFirstLaunch", false).apply()
                     }
@@ -60,17 +63,10 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Main(
     isFirstLaunch: Boolean,
+    navController: NavController,
     onFirstLaunchComplete: () -> Unit
 ) {
     val navController = rememberNavController()
-
-    LaunchedEffect(isFirstLaunch) {
-        if (!isFirstLaunch) {
-            navController.navigate("home") {
-                popUpTo("home") { inclusive = true }
-            }
-        }
-    }
 
     Scaffold { padding ->
         NavHost(
@@ -82,7 +78,7 @@ fun Main(
             composable("start2") { StartScreen2(navController) }
             composable("start3") {
                 StartScreen3(navController)
-                // 랜딩 페이지 완료 시 호출
+                // 첫 실행 완료 시만 실행되도록 변경
                 LaunchedEffect(Unit) { onFirstLaunchComplete() }
             }
             composable("home") {

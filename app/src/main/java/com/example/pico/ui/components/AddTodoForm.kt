@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -25,11 +26,11 @@ import com.example.pico.viewmodel.DailyTodoViewModel
 @Composable
 fun AddTodoForm(navController: NavController, viewModel: DailyTodoViewModel = hiltViewModel()) {
     val context = LocalContext.current
-    val title = remember { mutableStateOf("") }
-    val description = remember { mutableStateOf("") }
-    val dueDate = remember { mutableStateOf<Long?>(null) }
-    val importance = remember { mutableStateOf("") }
-    val category = remember { mutableStateOf("") }
+    val title = rememberSaveable { mutableStateOf("") }
+    val description = rememberSaveable { mutableStateOf("") }
+    val dueDate = rememberSaveable { mutableStateOf<Long?>(null) }
+    val importance = rememberSaveable { mutableStateOf("") }
+    val category = rememberSaveable { mutableStateOf("") }
 
     CardBox(txt = "어떤 일을 해볼까요?") {
         Column(

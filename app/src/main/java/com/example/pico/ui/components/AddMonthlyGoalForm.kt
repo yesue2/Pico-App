@@ -3,6 +3,7 @@ package com.example.pico.ui.components
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -17,15 +18,16 @@ import com.example.pico.viewmodel.MonthlyGoalViewModel
 fun AddMonthlyGoalForm(navController: NavController, viewModel: MonthlyGoalViewModel = hiltViewModel()) {
     val context = LocalContext.current
 
-    val title = remember { mutableStateOf("") }
-    val category = remember { mutableStateOf("") }
-    val importance = remember { mutableStateOf("") }
-    val goalAmount = remember { mutableStateOf("") } // 목표 수량
-    val unit = remember { mutableStateOf("") } // 목표 단위
-    val trackingMethod = remember { mutableStateOf("") } // 진행 방식
-    val progress = remember { mutableStateOf(0) } // 진행도
-    val startDate = remember { mutableStateOf<Long?>(null) }
-    val endDate = remember { mutableStateOf<Long?>(null) }
+    val title = rememberSaveable { mutableStateOf("") }
+    val category = rememberSaveable { mutableStateOf("") }
+    val importance = rememberSaveable { mutableStateOf("") }
+    val goalAmount = rememberSaveable { mutableStateOf("") }
+    val unit = rememberSaveable { mutableStateOf("") }
+    val trackingMethod = rememberSaveable { mutableStateOf("") }
+    val progress = rememberSaveable { mutableStateOf(0) }
+    val startDate = rememberSaveable { mutableStateOf<Long?>(null) }
+    val endDate = rememberSaveable { mutableStateOf<Long?>(null) }
+
 
 
     CardBox(txt = "이번 달엔 어떤 목표를 이루어 볼까요?") {
